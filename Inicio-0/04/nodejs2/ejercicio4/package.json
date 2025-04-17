@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "axion": "^0.1.0",
-    "upper-case": "^2.0.2",
-    "yarn": "^1.22.22"
-  }
-}
