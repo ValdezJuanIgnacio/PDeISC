@@ -1,10 +1,17 @@
-var url = require('url');
-var adr = 'http://localhost:8080/default.htm?year=2017&month=february';
-var q = url.parse(adr, true);
+import http from 'http';
+import { parse } from 'url';
 
-console.log(q.host); //returns 'localhost:8080'
-console.log(q.pathname); //returns '/default.htm'
-console.log(q.search); //returns '?year=2017&month=february'
+const server = http.createServer((req, res) => {
+  const parsedUrl = parse(req.url, true); // true para convertir query en objeto
 
-var qdata = q.query; //returns an object: { year: 2017, month: 'february' }
-console.log(qdata.month); //returns 'february'
+  console.log('Host:', req.headers.host);//Se muestra por consola los datos deseados
+  console.log('Pathname:', parsedUrl.pathname);// //
+  console.log('Query:', parsedUrl.query);// //
+
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Consulta registrada. Revisá la consola para ver los detalles.');
+});
+
+server.listen(8084, '127.0.0.1', () => {
+  console.log('Servidor escuchando en http://127.0.0.1:8084');
+});

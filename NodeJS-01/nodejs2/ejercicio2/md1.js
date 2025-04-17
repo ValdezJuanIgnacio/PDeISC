@@ -1,7 +1,7 @@
 import fs from 'fs';
 import http from 'http';
 
-// Contenido HTML que queremos guardar
+//Creo una variable con contenido de código html
 const htmlContent = `
 <html lang="es">
 <head>
@@ -16,7 +16,7 @@ const htmlContent = `
 </html>
 `;
 
-// Creamos o agregamos contenido al archivo HTML
+// Creo un archvio HTML y le paso el contenido de la variable 
 fs.appendFile('pagina.html', htmlContent, (err) => {
   if (err) {
     console.error('Error al escribir el archivo:', err);
@@ -25,9 +25,9 @@ fs.appendFile('pagina.html', htmlContent, (err) => {
   console.log('Archivo HTML creado o actualizado con éxito.');
 });
 
-// Creamos el servidor
+// Creación el servidor
 const server = http.createServer((req, res) => {
-  // Leemos el archivo HTML
+  // Leectura del archivo HTML
   fs.readFile('pagina.html', 'utf8', (err, data) => {
     if (err) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -35,13 +35,13 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    // Enviamos el contenido del archivo HTML
+    
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(data);
   });
 });
 
-// Ponemos el servidor a escuchar
+
 server.listen(8080, '127.0.0.1', () => {
   console.log('Servidor escuchando en http://127.0.0.1:8080');
 });
