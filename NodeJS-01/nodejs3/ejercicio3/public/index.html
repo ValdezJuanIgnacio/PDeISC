@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style/style.css">
     <title>Contador de Botones</title>
 </head>
 <body>
@@ -17,18 +18,20 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div class="navbar-nav" id="botonera">
-                            <button class="col-6 col-sm-3 mx-auto">Botón 1</button>
-                            <button class="col-6 col-sm-3 mx-auto">Botón 2</button>
-                            <button class="col-6 col-sm-3 mx-auto">Botón 3</button>
-                            <button class="col-6 col-sm-3 mx-auto">Botón 4</button>
-                            <button class="col-6 col-sm-3 mx-auto">Botón 5</button>
+                            <button class="col-6 col-sm-3 mx-3"><a href="pagina1.html">Coordenadas del mouse</a></button>
+                            <button class="col-6 col-sm-3 mx-3"><a href="pagina2.html">Pagina de cuadrado</a></button>
+                            <button class="col-6 col-sm-3 mx-3"><a href="pagina3.html">Pagina de teclas</a></button>
+                            <button class="col-6 col-sm-3 mx-3"><a href="pagina4.html">Pagina scroll</a></button>
+                            <button class="col-6 col-sm-3 mx-3"><a href="pagina5.html">Pagina boton</a></button>
                         </div>
+                        
                     </div>
+                    <button id="contarHijos" class="btn btn-dark d-block mt-2">Contar hijos de la botonera</button>
                 </div>
             </nav>
 
             <!-- Botón para contar los hijos -->
-            <button id="contarHijos" class="btn btn-primary mx-auto d-block mt-3">Contar hijos de la botonera</button>
+            
         </div>
     </header>
 

@@ -1,0 +1,19 @@
+#botonera{
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    button{
+        border-color: rgb(88, 109, 100);
+        border-radius: 50px;
+    }
+    button:hover{
+        box-shadow: -1px -1px 6px 0 rgb(122,221,102),4px 4px 16px 2px rgb(92,162,235);
+    }
+    #contarHijos{
+        button:hover{
+            box-shadow: -1px -1px 6px 0 rgb(122,221,102),4px 4px 16px 2px rgb(92,162,235);
+        }
+        
+    }
+}
