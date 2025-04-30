@@ -1,3 +1,4 @@
+//guarda en variables lo puesto en el formulario
 document.getElementById('registroForm').addEventListener('submit', function (e) {
     e.preventDefault();
   
@@ -14,7 +15,7 @@ document.getElementById('registroForm').addEventListener('submit', function (e) 
   
     mostrarDatos(datos);
   });
-  
+  //Muestra los datos del formulario
   function mostrarDatos(datos) {
     const div = document.getElementById('resultado');
     div.innerHTML = `

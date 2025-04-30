@@ -1,5 +1,7 @@
 const contenedor = document.getElementById('contenedor');
+//Define un orden para las variables
 const orden = ['titulo', 'parrafo', 'lista', 'imagen', 'input'];
+//guarda las variables con un orden
 const elementos = {
   titulo: null,
   parrafo: null,
@@ -7,7 +9,7 @@ const elementos = {
   imagen: null,
   input: null
 };
-
+//Sirve para agregar los elementos de la pagina y verificar si no estan agregados todavía
 function agregarElemento(tipo) {
   if (elementos[tipo]) {
     alert(`Ya se agregó el elemento ${tipo.toUpperCase()}.`);
@@ -41,7 +43,7 @@ function agregarElemento(tipo) {
   document.getElementById(`btn-${tipo}`).disabled = true;
   renderizar();
 }
-
+//Se encarga de que los elementos sigan un orden independienbtemente del momento en que se agregan
 function renderizar() {
   contenedor.innerHTML = '';
   orden.forEach(tipo => {

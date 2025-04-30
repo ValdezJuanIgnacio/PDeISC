@@ -1,5 +1,5 @@
 let enlaces = [];
-
+//CRea enlaces predeterminados
 function crearEnlaces() {
   enlaces = [
     { texto: "Google", href: "https://www.google.com" },
@@ -11,7 +11,7 @@ function crearEnlaces() {
   mostrarEnlaces();
   log("Enlaces predeterminados creados.");
 }
-
+//muestra los enlaces
 function mostrarEnlaces() {
   const div = document.getElementById('enlaces');
   div.innerHTML = '';
@@ -24,7 +24,7 @@ function mostrarEnlaces() {
     div.appendChild(document.createElement('br'));
   });
 }
-
+//agrega enlaces
 function agregarEnlace() {
   const texto = document.getElementById('nuevoTexto').value;
   const href = document.getElementById('nuevoHref').value;
@@ -33,10 +33,10 @@ function agregarEnlace() {
     mostrarEnlaces();
     log(`Nuevo enlace agregado: ${texto} → ${href}`);
   } else {
-    log("⚠️ Ingrese texto y URL para agregar un enlace.");
+    log("Ingrese texto y URL para agregar un enlace.");
   }
 }
-
+//modifica un enlace ya existente
 function modificarEnlace() {
   const index = parseInt(document.getElementById('modIndex').value);
   const nuevoTexto = document.getElementById('modTexto').value;
