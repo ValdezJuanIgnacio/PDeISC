@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  .info-scroll {
+    position: fixed;
+    z-index: 1000;
+    top: 10px;
+    right: 10px;
+    background: #000;
+    color: #fff;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    opacity: 0.7;
+  }
+
+  .contenido {
+    height: 3000px; 
+    padding: 20px;
+  }

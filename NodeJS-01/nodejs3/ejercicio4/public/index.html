@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Enlaces</title>
+  <link rel="stylesheet" href="style.css/style.css">
+</head>
+<body>
+  <h1>Gestión de Enlaces</h1>
+
+  <div class="buttons">
+    <button onclick="crearEnlaces()">Mostrar enlaces</button>
+  </div>
+
+  <div class="formulario">
+    <h2>Añadir Nuevo Enlace</h2>
+    <input type="text" id="nuevoTexto" placeholder="Texto del enlace">
+    <input type="text" id="nuevoHref" placeholder="URL del enlace">
+    <button onclick="agregarEnlace()">Agregar</button>
+  </div>
+
+  <div class="formulario">
+    <h2>Modificar Enlace</h2>
+    <input type="number" id="modIndex" placeholder="Índice del enlace (0, 1, 2...)">
+    <input type="text" id="modTexto" placeholder="Nuevo texto">
+    <input type="text" id="modHref" placeholder="Nueva URL">
+    <button onclick="modificarEnlace()">Modificar</button>
+  </div>
+
+  <div id="enlaces" class="contenedor"></div>
+  <div id="log" class="log"></div>
+
+  <script src="script/script.js"></script>
+</body>
+</html>

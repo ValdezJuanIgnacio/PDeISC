@@ -1,0 +1,9 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 50px;
+  }
+  #tecla {
+    font-size: 40px;
+    color: #2e7d32;
+  }

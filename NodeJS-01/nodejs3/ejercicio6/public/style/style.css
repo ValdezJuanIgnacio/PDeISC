@@ -1,0 +1,25 @@
+body {
+    font-family: sans-serif;
+    padding: 20px;
+    background: #f0f0f0;
+  }
+  
+  form {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ccc;
+    width: 300px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  #resultado {
+    margin-top: 20px;
+    background: #e9ffe9;
+    padding: 15px;
+    border: 1px solid green;
+  }
+  

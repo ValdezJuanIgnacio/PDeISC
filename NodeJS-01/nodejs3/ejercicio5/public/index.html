@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agregar Elementos con innerHTML</title>
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+  <h1>Agregar Elementos HTML en Orden</h1>
+
+  <div class="botones">
+    <button id="btn-titulo" onclick="agregarElemento('titulo')">Agregar Título</button>
+    <button id="btn-parrafo" onclick="agregarElemento('parrafo')">Agregar Párrafo</button>
+    <button id="btn-lista" onclick="agregarElemento('lista')">Agregar Lista</button>
+    <button id="btn-imagen" onclick="agregarElemento('imagen')">Agregar Imagen</button>
+    <button id="btn-input" onclick="agregarElemento('input')">Agregar Input</button>
+  </div>
+
+  <div id="contenedor"></div>
+
+  <script src="script/script.js"></script>
+</body>
+</html>

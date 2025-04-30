@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulario de Registro</title>
+  <link rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+  <h1>Formulario de Registro</h1>
+
+  <form id="registroForm">
+    <label>Nombre: <input type="text" name="nombre" required></label><br>
+    <label>Apellido: <input type="text" name="apellido" required></label><br>
+    <label>Edad: <input type="number" name="edad" required></label><br>
+    <label>Email: <input type="email" name="email" required></label><br>
+
+    <label>Género:</label>
+    <label><input type="radio" name="genero" value="Masculino" required> Masculino</label>
+    <label><input type="radio" name="genero" value="Femenino"> Femenino</label><br>
+
+    <label>País:
+      <select name="pais" required>
+        <option value="Argentina">Argentina</option>
+        <option value="Chile">Chile</option>
+        <option value="Uruguay">Uruguay</option>
+      </select>
+    </label><br>
+
+    <label>Intereses:</label>
+    <label><input type="checkbox" name="intereses" value="Música"> Música</label>
+    <label><input type="checkbox" name="intereses" value="Deporte"> Deporte</label>
+    <label><input type="checkbox" name="intereses" value="Lectura"> Lectura</label><br>
+
+    <button type="submit">Registrarse</button>
+  </form>
+
+  <div id="resultado"></div>
+
+  <script src="script/script.js"></script>
+</body>
+</html>
