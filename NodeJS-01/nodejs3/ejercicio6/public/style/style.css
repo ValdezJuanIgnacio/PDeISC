@@ -17,9 +17,15 @@ body {
   }
   
   #resultado {
-    margin-top: 20px;
+    
+    margin-top: 5px;
     background: #e9ffe9;
     padding: 15px;
     border: 1px solid green;
   }
-  
+  .columna{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    height: auto;
+  }

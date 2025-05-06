@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formulario con Node</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Formulario</h1>
+    <form id="mi_formulario">
+      <label for="usr">Usuario:</label>
+      <input type="text" name="usr" id="usr" required>
+
+      <label for="pass">Contraseña:</label>
+      <input type="password" name="pass" id="pass" required>
+
+      <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
