@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ejercicios con indexOf()</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    section {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+    .resultado {
+      background-color: #f1f1f1;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ejercicios con indexOf()</h1>
+
+  <div class="container">
+    <!-- 1. Buscar "perro" -->
+    <section>
+      <h2>1. Buscar "perro"</h2>
+      <form id="form-palabras">
+        <input type="text" id="palabra" placeholder="Agregar palabra">
+        <button type="submit">Agregar palabra</button>
+      </form>
+      <div class="resultado" id="array-palabras">Palabras: []</div>
+      <button onclick="buscarPerro()">Buscar 'perro'</button>
+      <div class="resultado" id="resultado-perro"></div>
+    </section>
+
+    <!-- 2. Buscar número 50 -->
+    <section>
+      <h2>2. Buscar número 50</h2>
+      <form id="form-numeros">
+        <input type="number" id="numero" placeholder="Agregar número">
+        <button type="submit">Agregar número</button>
+      </form>
+      <div class="resultado" id="array-numeros">Números: []</div>
+      <button onclick="buscarCincuenta()">Buscar 50</button>
+      <div class="resultado" id="resultado-cincuenta"></div>
+    </section>
+
+    <!-- 3. Buscar "Madrid" -->
+    <section>
+      <h2>3. Buscar ciudad "Madrid"</h2>
+      <form id="form-ciudades">
+        <input type="text" id="ciudad" placeholder="Agregar ciudad">
+        <button type="submit">Agregar ciudad</button>
+      </form>
+      <div class="resultado" id="array-ciudades">Ciudades: []</div>
+      <button onclick="buscarMadrid()">Buscar 'Madrid'</button>
+      <div class="resultado" id="resultado-madrid"></div>
+    </section>
+  </div>
+
+  <script>
+    // 1. Buscar "perro"
+    let palabras = [];
+    document.getElementById("form-palabras").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const palabra = document.getElementById("palabra").value.trim();
+      if (palabra) {
+        palabras.push(palabra);
+        document.getElementById("array-palabras").textContent = "Palabras: [" + palabras.join(", ") + "]";
+        this.reset();
+      }
+    });
+
+    function buscarPerro() {
+      const indice = palabras.indexOf("perro");
+      document.getElementById("resultado-perro").textContent =
+        indice !== -1 ? `"perro" está en la posición ${indice}` : `"perro" no está en el array.`;
+    }
+
+    // 2. Buscar número 50
+    let numeros = [];
+    document.getElementById("form-numeros").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const numero = parseInt(document.getElementById("numero").value.trim());
+      if (!isNaN(numero)) {
+        numeros.push(numero);
+        document.getElementById("array-numeros").textContent = "Números: [" + numeros.join(", ") + "]";
+        this.reset();
+      }
+    });
+
+    function buscarCincuenta() {
+      const indice = numeros.indexOf(50);
+      document.getElementById("resultado-cincuenta").textContent =
+        indice !== -1 ? `El número 50 está en la posición ${indice}` : "El número 50 no está en el array.";
+    }
+
+    // 3. Buscar "Madrid"
+    let ciudades = [];
+    document.getElementById("form-ciudades").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const ciudad = document.getElementById("ciudad").value.trim();
+      if (ciudad) {
+        ciudades.push(ciudad);
+        document.getElementById("array-ciudades").textContent = "Ciudades: [" + ciudades.join(", ") + "]";
+        this.reset();
+      }
+    });
+
+    function buscarMadrid() {
+      const indice = ciudades.indexOf("Madrid");
+      document.getElementById("resultado-madrid").textContent =
+        indice !== -1 ? `"Madrid" está en la posición ${indice}` : `"Madrid" no está en el array.`;
+    }
+  </script>
+
+</body>
+</html>

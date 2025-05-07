@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ejercicios con pop()</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    section {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+    .resultado {
+      background-color: #f1f1f1;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ejercicios con pop()</h1>
+
+  <div class="container">
+    <!-- Ejercicio 1: Animales -->
+    <section>
+      <h2>1. Eliminar último animal</h2>
+      <div class="resultado" id="resultado-animales">Animales: ["Perro", "Gato", "Conejo"]</div>
+      <button onclick="eliminarAnimal()">Eliminar último</button>
+      <div id="ultimo-animal" class="resultado"></div>
+    </section>
+
+    <!-- Ejercicio 2: Lista de compras -->
+    <section>
+      <h2>2. Quitar último producto</h2>
+      <div class="resultado" id="resultado-productos">Productos: ["Pan", "Leche", "Huevos"]</div>
+      <button onclick="eliminarProducto()">Quitar último producto</button>
+      <div id="producto-eliminado" class="resultado"></div>
+    </section>
+
+    <!-- Ejercicio 3: Vaciar array con while -->
+    <section>
+      <h2>3. Vaciar array con while</h2>
+      <div class="resultado" id="resultado-vaciar">Elementos: ["A", "B", "C", "D"]</div>
+      <button onclick="vaciarArray()">Vaciar todo</button>
+      <div id="elementos-eliminados" class="resultado"></div>
+    </section>
+  </div>
+
+  <script>
+    // Ejercicio 1: Animales
+    let animales = ["Perro", "Gato", "Conejo"];
+    function eliminarAnimal() {
+      if (animales.length > 0) {
+        let eliminado = animales.pop();
+        document.getElementById("ultimo-animal").textContent = "Eliminado: " + eliminado;
+        document.getElementById("resultado-animales").textContent = "Animales: [" + animales.join(", ") + "]";
+      } else {
+        document.getElementById("ultimo-animal").textContent = "No hay más animales.";
+      }
+    }
+
+    // Ejercicio 2: Productos
+    let productos = ["Pan", "Leche", "Huevos"];
+    function eliminarProducto() {
+      if (productos.length > 0) {
+        let eliminado = productos.pop();
+        document.getElementById("producto-eliminado").textContent = "Eliminado: " + eliminado;
+        document.getElementById("resultado-productos").textContent = "Productos: [" + productos.join(", ") + "]";
+      } else {
+        document.getElementById("producto-eliminado").textContent = "Lista vacía.";
+      }
+    }
+
+    // Ejercicio 3: Vaciar con while
+    let elementos = ["A", "B", "C", "D"];
+    function vaciarArray() {
+      let eliminados = [];
+      while (elementos.length > 0) {
+        eliminados.push(elementos.pop());
+      }
+      document.getElementById("resultado-vaciar").textContent = "Elementos: []";
+      document.getElementById("elementos-eliminados").textContent = "Eliminados: [" + eliminados.join(", ") + "]";
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ejercicios con splice()</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    section {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+    .resultado {
+      background-color: #f1f1f1;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ejercicios con splice()</h1>
+
+  <div class="container">
+    <!-- Ejercicio 1: Eliminar dos elementos -->
+    <section>
+      <h2>1. Eliminar dos elementos desde la posición 1</h2>
+      <div class="resultado" id="resultado-letras">Letras: []</div>
+      <form id="form-letras">
+        <input type="text" id="letra" placeholder="Agregar letra">
+        <button type="submit">Agregar letra</button>
+      </form>
+      <button onclick="eliminarElementos()">Eliminar dos elementos</button>
+      <div class="resultado" id="eliminados"></div>
+    </section>
+
+    <!-- Ejercicio 2: Insertar un nuevo nombre -->
+    <section>
+      <h2>2. Insertar un nuevo nombre en la segunda posición</h2>
+      <form id="form-nombre">
+        <input type="text" id="nuevoNombre" placeholder="Nuevo nombre">
+        <button type="submit">Insertar nombre</button>
+      </form>
+      <div class="resultado" id="resultado-nombres">Nombres: []</div>
+    </section>
+
+    <!-- Ejercicio 3: Reemplazar dos elementos por otros nuevos -->
+    <section>
+      <h2>3. Reemplazar dos elementos por otros nuevos</h2>
+      <form id="form-reemplazo">
+        <input type="text" id="nuevoElemento1" placeholder="Nuevo elemento 1">
+        <input type="text" id="nuevoElemento2" placeholder="Nuevo elemento 2">
+        <button type="submit">Reemplazar elementos</button>
+      </form>
+      <div class="resultado" id="resultado-reemplazo">Reemplazo: [Elemento1, Elemento2, Elemento3, Elemento4, Elemento5]</div>
+    </section>
+  </div>
+
+  <script>
+    // Ejercicio 1: Eliminar dos elementos desde la posición 1
+    let letras = [];
+    const formLetras = document.getElementById("form-letras");
+    formLetras.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const letra = document.getElementById("letra").value.trim();
+      if (letra !== "") {
+        letras.push(letra); // Agregar letra al array
+        document.getElementById("resultado-letras").textContent = "Letras: [" + letras.join(", ") + "]";
+        formLetras.reset();
+      }
+    });
+
+    function eliminarElementos() {
+      if (letras.length > 1) {
+        const eliminados = letras.splice(1, 2); // Eliminar 2 elementos desde la posición 1
+        document.getElementById("eliminados").textContent = "Eliminados: " + eliminados.join(", ");
+        document.getElementById("resultado-letras").textContent = "Letras: [" + letras.join(", ") + "]";
+      } else {
+        document.getElementById("eliminados").textContent = "No hay suficientes elementos para eliminar.";
+      }
+    }
+
+    // Ejercicio 2: Insertar un nuevo nombre en la segunda posición
+    let nombres = [];
+    const formNombre = document.getElementById("form-nombre");
+    formNombre.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nuevoNombre = document.getElementById("nuevoNombre").value.trim();
+      if (nuevoNombre !== "") {
+        nombres.splice(1, 0, nuevoNombre); // Insertar en la segunda posición sin eliminar nada
+        document.getElementById("resultado-nombres").textContent = "Nombres: [" + nombres.join(", ") + "]";
+        formNombre.reset();
+      }
+    });
+
+    // Ejercicio 3: Reemplazar dos elementos por otros nuevos
+    let reemplazo = ["Elemento1", "Elemento2", "Elemento3", "Elemento4", "Elemento5"];
+    const formReemplazo = document.getElementById("form-reemplazo");
+    formReemplazo.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nuevoElemento1 = document.getElementById("nuevoElemento1").value.trim();
+      const nuevoElemento2 = document.getElementById("nuevoElemento2").value.trim();
+      if (nuevoElemento1 !== "" && nuevoElemento2 !== "") {
+        reemplazo.splice(1, 2, nuevoElemento1, nuevoElemento2); // Reemplazar dos elementos
+        document.getElementById("resultado-reemplazo").textContent = "Reemplazo: [" + reemplazo.join(", ") + "]";
+        formReemplazo.reset();
+      }
+    });
+
+    // Mostrar el estado inicial del array de reemplazo en la página
+    document.getElementById("resultado-reemplazo").textContent = "Reemplazo: [" + reemplazo.join(", ") + "]";
+  </script>
+
+</body>
+</html>

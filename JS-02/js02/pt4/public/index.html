@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ejercicios con shift()</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    section {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+    }
+    .resultado {
+      background-color: #f1f1f1;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ejercicios con shift()</h1>
+
+  <div class="container">
+    <!-- Ejercicio 1: Quitar primer número -->
+    <section>
+      <h2>1. Quitar primer número</h2>
+      <div class="resultado" id="resultado-numeros">Números: [10, 20, 30, 40]</div>
+      <button onclick="quitarNumero()">Quitar primero</button>
+      <div class="resultado" id="numero-quitado"></div>
+    </section>
+
+    <!-- Ejercicio 2: Mensajes de chat -->
+    <section>
+      <h2>2. Mensajes de chat</h2>
+      <div class="resultado" id="resultado-chat">Mensajes: ["Hola", "¿Cómo estás?", "¿Listo para la reunión?"]</div>
+      <button onclick="eliminarMensaje()">Eliminar primer mensaje</button>
+      <div class="resultado" id="mensaje-eliminado"></div>
+    </section>
+
+    <!-- Ejercicio 3: Cola de atención -->
+    <section>
+      <h2>3. Cola de atención</h2>
+      <form id="form-clientes">
+        <input type="text" id="nuevoCliente" placeholder="Nombre del cliente">
+        <button type="submit">Agregar a la cola</button>
+      </form>
+      <button onclick="atenderCliente()">Atender cliente</button>
+      <div class="resultado" id="resultado-clientes">Cola: ["Ana", "Pedro", "Laura"]</div>
+      <div class="resultado" id="cliente-atendido"></div>
+    </section>
+  </div>
+
+  <script>
+    // Ejercicio 1: Quitar primer número
+    const numeros = [10, 20, 30, 40];
+    function quitarNumero() {
+      if (numeros.length > 0) {
+        const quitado = numeros.shift();
+        document.getElementById("numero-quitado").textContent = "Número quitado: " + quitado;
+        document.getElementById("resultado-numeros").textContent = "Números: [" + numeros.join(", ") + "]";
+      } else {
+        document.getElementById("numero-quitado").textContent = "No quedan números.";
+      }
+    }
+
+    // Ejercicio 2: Mensajes de chat
+    const mensajes = ["Hola", "¿Cómo estás?", "¿Listo para la reunión?"];
+    function eliminarMensaje() {
+      if (mensajes.length > 0) {
+        const eliminado = mensajes.shift();
+        document.getElementById("mensaje-eliminado").textContent = "Mensaje eliminado: " + eliminado;
+        document.getElementById("resultado-chat").textContent = "Mensajes: [" + mensajes.join(", ") + "]";
+      } else {
+        document.getElementById("mensaje-eliminado").textContent = "No hay mensajes.";
+      }
+    }
+
+    // Ejercicio 3: Cola de atención al cliente
+    const clientes = ["Ana", "Pedro", "Laura"];
+    const formClientes = document.getElementById("form-clientes");
+    formClientes.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const nuevo = document.getElementById("nuevoCliente").value.trim();
+      if (nuevo !== "") {
+        clientes.push(nuevo);
+        document.getElementById("resultado-clientes").textContent = "Cola: [" + clientes.join(", ") + "]";
+        formClientes.reset();
+      }
+    });
+
+    function atenderCliente() {
+      if (clientes.length > 0) {
+        const atendido = clientes.shift();
+        document.getElementById("cliente-atendido").textContent = "Cliente atendido: " + atendido;
+        document.getElementById("resultado-clientes").textContent = "Cola: [" + clientes.join(", ") + "]";
+      } else {
+        document.getElementById("cliente-atendido").textContent = "No hay clientes en espera.";
+      }
+    }
+  </script>
+
+</body>
+</html>
