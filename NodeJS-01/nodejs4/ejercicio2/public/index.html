@@ -1,78 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
-    <title>Document</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Validación de Formulario con Javascript</title>
+	<link rel="stylesheet" href="">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> 
+	<link rel="stylesheet" href="style/estilos.css">
 </head>
 <body>
-    <form class="row g-3 needs-validation" novalidate>
-        <div class="col-md-4">
-          <label for="validationCustom01" class="form-label">First name</label>
-          <input type="text" class="form-control" id="validationCustom01" value="Juani" required>
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustom02" class="form-label">Last name</label>
-          <input type="text" class="form-control" id="validationCustom02" value="Valdez" required>
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustomUsername" class="form-label">Username</label>
-          <div class="input-group has-validation">
-            <span class="input-group-text" id="inputGroupPrepend">@</span>
-            <input type="email" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
-            <div class="invalid-feedback">
-              Please choose a username.
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <label for="validationCustom03" class="form-label">City</label>
-          <input type="text" class="form-control" id="validationCustom03" required>
-          <div class="invalid-feedback">
-            Please provide a valid city.
-          </div>
-        </div>
-        <div class="col-md-3">
-          <label for="validationCustom04" class="form-label">State</label>
-          <select class="form-select" id="validationCustom04" required>
-            <option selected disabled value="">Choose...</option>
-            <option>...</option>
-          </select>
-          <div class="invalid-feedback">
-            Please select a valid state.
-          </div>
-        </div>
-        <div class="col-md-3">
-          <label for="validationCustom05" class="form-label">DNI</label>
-          <input type="number" class="form-control" id="validationCustom05" required>
-          <div class="invalid-feedback">
-            Poné un DNI valido por favor.
-          </div>
-        </div>
-        <div class="col-12">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            <label class="form-check-label" for="invalidCheck">
-              Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-              You must agree before submitting.
-            </div>
-          </div>
-        </div>
-        <div class="col-12">
-          <button class="btn btn-primary" type="submit">Submit form</button>
-        </div>
-      </form>
-    <script src="script/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+	<main>
+		<h1>Formulario</h1>
+		<form action="" class="formulario" id="formulario">
+			
+			
+			<!-- Grupo: Nombre -->
+			<div class="formulario__grupo" id="grupo__nombre">
+				<label for="nombre" class="formulario__label">Nombre</label>
+				<div class="formulario__grupo-input">
+					<input type="text" class="formulario__input" name="nombre" id="nombre" placeholder="Juan Ignacio">
+					<i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El nombre tiene que tener minimo 3 digitos y solo puede contener letras.</p>
+			</div>
+
+			<!-- Apellido -->
+			<div class="formulario__grupo" id="grupo__apellido">
+				<label for="apellido" class="formulario__label">Apellido</label>
+				<div class="formulario__grupo-input">
+				  <input type="text" class="formulario__input" name="apellido" id="apellido" placeholder="Pérez">
+				  <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El apellido solo puede contener letras y espacios.</p>
+			  </div>
+
+			<!-- Edad -->
+			<div class="formulario__grupo" id="grupo__edad">
+				<label for="edad" class="formulario__label">Edad</label>
+				<div class="formulario__grupo-input">
+				  <input type="number" class="formulario__input" name="edad" id="edad" placeholder="30" min="0" max="120">
+				  <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">La edad no coincide con la fecha de nacimiento o no es valida.</p>
+			  </div>
+
+			<!-- Fecha de nacimiento -->
+			<div class="formulario__grupo" id="grupo__fechaNacimiento">
+				<label for="fechaNacimiento" class="formulario__label">Fecha de Nacimiento</label>
+				<div class="formulario__grupo-input">
+	  			<input type="date" class="formulario__input" name="fechaNacimiento" id="fechaNacimiento" required>
+	  			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">Fecha inválida o edad no permitida (0–120 años).</p>
+  			</div>
+
+			<!-- Sexo -->
+			<div class="formulario__grupo" id="grupo__sexo">
+				<label for="sexo" class="formulario__label">Sexo</label>
+				<div class="formulario__grupo-input">
+				  <select name="sexo" id="sexo" class="formulario__input">
+					
+					<option value="masculino">Masculino</option>
+					<option value="femenino">Femenino</option>
+					<option value="otro">Otro</option>
+				  </select>
+				  <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">Seleccioná una opción válida.</p>
+			  </div>
+
+			<!-- DNI -->
+			<div class="formulario__grupo" id="grupo__dni">
+				<label for="dni" class="formulario__label">DNI</label>
+				<div class="formulario__grupo-input">
+				  <input type="text" class="formulario__input" name="dni" id="dni" placeholder="12345678" maxlength="8">
+				  <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El DNI debe tener exactamente 8 números.</p>
+			  </div>
+
+			 <!-- Estado civil -->
+			 <div class="formulario__grupo" id="grupo__estadoCivil">
+				<label for="estadoCivil" class="formulario__label">Estado civil</label>
+				<div class="formulario__grupo-input">
+				  <input type="text" class="formulario__input" name="estadoCivil" id="estadoCivil" placeholder="Soltero/a">
+				  <i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">Debe ser una palabra válida (ej: Casado/a, Soltero/a, etc.).</p>
+			  </div>
+
+			<!-- Nacionalidad -->
+    		<div class="formulario__grupo" id="grupo__nacionalidad">
+      			<label for="nacionalidad" class="formulario__label">Nacionalidad</label>
+      			<div class="formulario__grupo-input">
+        			<input type="text" class="formulario__input" name="nacionalidad" id="nacionalidad" placeholder="Argentina">
+        			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+      			</div>
+      			<p class="formulario__input-error">Debe contener solo letras.</p>
+    		</div>
+
+			
+			<!-- Grupo: Teléfono -->
+			<div class="formulario__grupo" id="grupo__telefono">
+				<label for="telefono" class="formulario__label">Teléfono</label>
+				<div class="formulario__grupo-input">
+					<input type="text" class="formulario__input" name="telefono" id="telefono" placeholder="2234807655" maxlength="14">
+					<i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El telefono solo puede contener numeros y el maximo son 14 dígitos.</p>
+			</div>
+
+			
+			<!-- Grupo: Correo Electronico -->
+			<div class="formulario__grupo" id="grupo__correo">
+				<label for="correo" class="formulario__label">Correo Electrónico</label>
+				<div class="formulario__grupo-input">
+					<input type="email" class="formulario__input" name="correo" id="correo" placeholder="correo@correo.com">
+					<i class="formulario__validacion-estado fas fa-times-circle"></i>
+				</div>
+				<p class="formulario__input-error">El correo solo puede contener letras, numeros, puntos, guiones y guion bajo.</p>
+			</div>
+
+
+
+
+			<!-- Grupo: Terminos y Condiciones -->
+			<div class="formulario__grupo" id="grupo__terminos">
+				<label class="formulario__label">
+					<input class="formulario__checkbox" type="checkbox" name="terminos" id="terminos">
+					Acepto los Terminos y Condiciones
+				</label>
+			</div>
+
+			<div class="formulario__mensaje" id="formulario__mensaje">
+				<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+			</div>
+
+			<div class="formulario__grupo formulario__grupo-btn-enviar">
+				<button type="submit" class="formulario__btn">Enviar</button>
+				<p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+			</div>
+		</form>
+		<h2>Usuarios Ingresados</h2>
+		<div id="resultado"></div>
+
+	</main>
+
+	<script src="script/script.js"></script>
+	<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 </body>
 </html>

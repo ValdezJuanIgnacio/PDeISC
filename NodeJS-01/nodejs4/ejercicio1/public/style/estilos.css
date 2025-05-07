@@ -163,3 +163,17 @@ main {
 		width: 100%;
 	}
 }
+#resultado {
+    margin-top: 20px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+}
+
+.usuario-card {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
