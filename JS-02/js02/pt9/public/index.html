@@ -3,73 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Ejercicios con forEach()</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      margin: 0;
-      background-color: #f8f8f8;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .container {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    section {
-      flex: 1 1 300px;
-      max-width: 350px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease;
-    }
-
-    section:hover {
-      transform: scale(1.02);
-    }
-
-    h2 {
-      font-size: 18px;
-      margin-top: 0;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      font-size: 15px;
-    }
-
-    .resultado {
-      background-color: #f1f1f1;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      min-height: 40px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style/style.css">
+  
 </head>
 <body>
 
@@ -108,63 +43,7 @@
   </section>
 </div>
 
-<script>
-  let nombres = [];
-  function agregarNombre() {
-    const nombre = document.getElementById("inputNombre").value.trim();
-    if (nombre && !nombres.includes(nombre)) {
-      nombres.push(nombre);
-      document.getElementById("resultado-nombres").textContent = "Nombres: [" + nombres.join(", ") + "]";
-      document.getElementById("inputNombre").value = '';  // Limpiar el input
-    }
-  }
-
-  function saludarNombres() {
-    let saludos = [];
-    nombres.forEach(nombre => {
-      saludos.push(`Hola, ${nombre}!`);
-    });
-    document.getElementById("saludo-nombres").textContent = saludos.join("\n");
-  }
-
-  let numeros = [];
-  function agregarNumero() {
-    const numero = parseInt(document.getElementById("inputNumero").value);
-    if (!isNaN(numero) && !numeros.includes(numero)) {
-      numeros.push(numero);
-      document.getElementById("resultado-numeros").textContent = "Números: [" + numeros.join(", ") + "]";
-      document.getElementById("inputNumero").value = '';  // Limpiar el input
-    }
-  }
-
-  function doblarNumeros() {
-    let dobles = [];
-    numeros.forEach(numero => {
-      dobles.push(numero * 2);
-    });
-    document.getElementById("doble-numeros").textContent = "Doble de los números: " + dobles.join(", ");
-  }
-
-  let personas = [];
-  function agregarPersona() {
-    const nombre = document.getElementById("inputPersonaNombre").value.trim();
-    const edad = parseInt(document.getElementById("inputPersonaEdad").value);
-    if (nombre && !isNaN(edad)) {
-      personas.push({ nombre, edad });
-      document.getElementById("resultado-personas").textContent = "Personas: " + personas.map(p => p.nombre).join(", ");
-      document.getElementById("inputPersonaNombre").value = '';  // Limpiar el input
-      document.getElementById("inputPersonaEdad").value = '';  // Limpiar el input
-    }
-  }
-
-  function mostrarPersonas() {
-    let textoPersonas = [];
-    personas.forEach(persona => {
-      textoPersonas.push(`${persona.nombre}, ${persona.edad} años`);
-    });
-    document.getElementById("mostrar-personas").textContent = "Personas y edades: " + textoPersonas.join(", ");
-  }
-</script>
+<script src="script/script.js"></script>
 
 </body>
 </html>

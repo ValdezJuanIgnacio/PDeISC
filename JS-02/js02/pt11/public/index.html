@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ejercicios con filter()</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Ejercicios con filter()</h1>
+
+<div class="container">
+
+  <!-- 1. Números mayores a 10 -->
+  <section>
+    <h2>1. Filtrar números mayores a 10</h2>
+    <input type="number" id="inputNumero" placeholder="Ingresá un número">
+    <button onclick="agregarNumero()">Agregar número</button>
+    <div class="resultado" id="resultado-numeros">Números: []</div>
+    <button onclick="filtrarMayores10()">Filtrar > 10</button>
+    <div class="resultado" id="resultado-mayores10"></div>
+  </section>
+
+  <!-- 2. Palabras de más de 5 letras -->
+  <section>
+    <h2>2. Palabras con más de 5 letras</h2>
+    <input type="text" id="inputPalabra" placeholder="Ingresá una palabra">
+    <button onclick="agregarPalabra()">Agregar palabra</button>
+    <div class="resultado" id="resultado-palabras">Palabras: []</div>
+    <button onclick="filtrarPalabrasLargas()">Filtrar largas</button>
+    <div class="resultado" id="resultado-largas"></div>
+  </section>
+
+  <!-- 3. Filtrar usuarios activos -->
+  <section>
+    <h2>3. Filtrar usuarios activos</h2>
+    <input type="text" id="inputNombreUsuario" placeholder="Nombre del usuario">
+    <select id="inputActivo">
+      <option value="true">Activo</option>
+      <option value="false">Inactivo</option>
+    </select>
+    <button onclick="agregarUsuario()">Agregar usuario</button>
+    <div class="resultado" id="resultado-usuarios">Usuarios: []</div>
+    <button onclick="filtrarActivos()">Filtrar activos</button>
+    <div class="resultado" id="resultado-activos"></div>
+  </section>
+
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>

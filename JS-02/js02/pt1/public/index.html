@@ -7,39 +7,52 @@
 </head>
 <body>
 
-  <h1>Ejercicios con push()</h1>
+  <main>
+    <h1>Ejercicios con push()</h1>
 
-  <div class="container">
-    <!-- Ejercicio 1 -->
-    <section>
-      <h2>1. Frutas</h2>
-      <form id="form-frutas">
-        <input type="text" placeholder="Mango" id="fruta1">
-        <button type="submit">Agregar Frutas</button>
+    <div class="formulario">
+      <!-- Frutas -->
+      <form id="form-frutas" class="formulario__grupo">
+        <label for="fruta1" class="formulario__label">1. Frutas</label>
+        <div class="formulario__grupo-input">
+          <input type="text" placeholder="Mango" id="fruta1" class="formulario__input">
+        </div>
+        <div class="formulario__grupo-btn-enviar">
+          <button type="submit" class="formulario__btn">Agregar Fruta</button>
+        </div>
+        <div class="resultado" id="resultado-frutas">Frutas: ...</div>
       </form>
-      <div class="resultado" id="resultado-frutas">Frutas: ...</div>
-    </section>
 
-    <!-- Ejercicio 2 -->
-    <section>
-      <h2>2. Amigos</h2>
-      <form id="form-amigos">
-        <input type="text" placeholder="Amigo 1" id="amigo1">
-        <button type="submit">Agregar Amigos</button>
+      <!-- Amigos -->
+      <form id="form-amigos" class="formulario__grupo">
+        <label for="amigo1" class="formulario__label">2. Amigos</label>
+        <div class="formulario__grupo-input">
+          <input type="text" placeholder="Amigo 1" id="amigo1" class="formulario__input">
+        </div>
+        <div class="formulario__grupo-btn-enviar">
+          <button type="submit" class="formulario__btn">Agregar Amigo</button>
+        </div>
+        <div class="resultado" id="resultado-amigos">Amigos: ...</div>
       </form>
-      <div class="resultado" id="resultado-amigos">Amigos: ...</div>
-    </section>
 
-    <!-- Ejercicio 3 -->
-    <section>
-      <h2>3. Números</h2>
-      <form id="form-numeros">
-        <input type="number" id="nuevoNumero" placeholder="Nuevo número">
-        <button type="submit">Agregar Número</button>
+      <!-- Números -->
+      <form id="form-numeros" class="formulario__grupo">
+        <label for="nuevoNumero" class="formulario__label">3. Números</label>
+        <div class="formulario__grupo-input">
+          <input type="number" placeholder="Nuevo número" id="nuevoNumero" class="formulario__input">
+        </div>
+        <div class="formulario__grupo-btn-enviar">
+          <button type="submit" class="formulario__btn">Agregar Número</button>
+        </div>
+        <div class="resultado" id="resultado-numeros">Números: 3, 7, 15</div>
       </form>
-      <div class="resultado" id="resultado-numeros">Números: 3, 7, 15</div>
-    </section>
-  </div>
+    </div>
+  </main>
+
+  <!-- Formularios invisibles para manejar envío -->
+  <form id="form-frutas"></form>
+  <form id="form-amigos"></form>
+  <form id="form-numeros"></form>
 
   <script src="script/script.js"></script>
 

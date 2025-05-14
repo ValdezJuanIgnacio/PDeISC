@@ -1,0 +1,249 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+	background: #E5E5E5;
+}
+
+main {
+	max-width: 800px;
+	width: 90%;
+	margin: auto;
+	padding: 40px;
+}
+
+.formulario {
+	display: grid;
+	grid-template-columns: 1fr; /* Cambiado para que sea una columna */
+	gap: 20px;
+	width: 100%;
+}
+
+.formulario__label {
+	display: block;
+	font-weight: 700;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.formulario__grupo {
+	margin-bottom: 15px;
+	position: relative;
+}
+
+.formulario__grupo-input {
+	position: relative;
+}
+
+.formulario__input,
+.formulario__grupo select,
+#grupo__fechaNacimiento input[type="date"] {
+	width: 100%;
+	background: #fff;
+	border: 3px solid transparent;
+	border-radius: 3px;
+	height: 45px;
+	line-height: 45px;
+	padding: 0 40px 0 10px;
+	transition: .3s ease all;
+}
+
+.formulario__input:focus,
+.formulario__grupo select:focus,
+#grupo__fechaNacimiento input[type="date"]:focus {
+	border: 3px solid #0075FF;
+	outline: none;
+	box-shadow: 3px 0px 30px rgba(163,163,163, 0.4);
+}
+
+.formulario__input-error {
+	font-size: 12px;
+	margin-bottom: 0;
+	display: none;
+	color: red;
+}
+
+.formulario__validacion-estado {
+	position: absolute;
+	right: 10px;
+	bottom: 15px;
+	z-index: 100;
+	font-size: 16px;
+	opacity: 0;
+}
+
+.formulario__grp-correcto .formulario__validacion-estado,
+.formulario__grupo-correcto i {
+	color: #1ed12d;
+	opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__validacion-estado {
+	color: #bb2929;
+	opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__label {
+	color: #bb2929;
+}
+
+.formulario__grupo-incorrecto .formulario__input,
+.formulario__grupo-incorrecto select,
+.formulario__grupo-incorrecto #grupo__fechaNacimiento input[type="date"] {
+	border: 3px solid #bb2929;
+}
+
+.formulario__grupo-correcto .formulario__input,
+.formulario__grupo-correcto select,
+.formulario__grupo-correcto #grupo__fechaNacimiento input[type="date"] {
+	border: 2px solid #1ed12d;
+}
+
+.formulario__checkbox {
+	margin-right: 10px;
+	transform: scale(1.2);
+}
+
+.formulario__grupo#grupo__terminos {
+	grid-column: span 2;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.formulario__mensaje,
+.formulario__grupo-btn-enviar {
+	display: flex;            /* fila de botones */
+	justify-content: center;  /* centrar el grupo */
+	align-items: center;      /* alinear botones verticalmente */
+	gap: 10px;                /* separación uniforme */
+  }
+  
+  .formulario__btn {
+	margin: 0;                /* elimina márgenes extra */
+	/* width y height ya definidos, aseguran altura igual */
+  }
+.formulario__mensaje {
+	height: 45px;
+	line-height: 45px;
+	background: #F66060;
+	padding: 0 15px;
+	border-radius: 3px;
+	display: none;
+}
+
+.formulario__mensaje-activo {
+	display: block;
+}
+
+.formulario__mensaje p {
+	margin: 0;
+}
+
+.formulario__grupo-btn-enviar {
+  display: flex;
+  justify-content: center;  /* centra el botón horizontalmente */
+  align-items: center;
+}
+
+.formulario__btn {
+  display: block;
+  margin: 0 auto;    /* centrar horizontalmente */
+  width: 50%;        /* o el ancho que prefieras */
+  height: 45px;
+  line-height: 45px;
+  background: #000;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: .1s ease all;;
+}
+
+.formulario__btn:hover {
+	box-shadow: 3px 0px 30px rgba(163,163,163, 1);
+}
+
+.formulario__mensaje-exito {
+	font-size: 14px;
+	color: #119200;
+	display: none;
+}
+
+.formulario__mensaje-exito-activo {
+	display: block;
+}
+
+/* Fecha de nacimiento specific icon positioning */
+#grupo__fechaNacimiento i {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.resultado {
+	background: white; /* Fondo blanco */
+	margin-top: 2%;
+  padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+}
+
+/* Result container */
+#resultado {
+	margin-top: 20px;
+	padding: 10px;
+	background: #f9f9f9;
+	border: 1px solid #ccc;
+}
+
+.usuario-card {
+	padding: 10px;
+	margin-bottom: 10px;
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+
+/* Media queries */
+@media screen and (max-width: 800px) {
+	.formulario {
+		grid-template-columns: 1fr;
+	}
+
+	.formulario__grupo#grupo__terminos,
+	.formulario__mensaje,
+	.formulario__grupo-btn-enviar {
+		grid-column: 1;
+	}
+
+	.formulario__btn {
+		width: 100%;
+	}
+}
+/* Ejercicio 1: botones en la misma línea y tope idéntico */
+#form-letras .formulario__grupo-btn-enviar {
+	display: flex;
+	margin-top: 2%;
+	flex-direction: row;
+	justify-content: center;  /* centrar el bloque de botones */
+	align-items: flex-start;  /* alinear el tope de los botones */
+	gap: 10px;                /* separación uniforme */
+  }
+  
+  /* Asegurá misma altura y sin márgenes extra */
+  #form-letras .formulario__btn {
+	margin: 0;
+	height: 45px;      /* igual altura que tus inputs */
+	line-height: 45px; /* centra vertical el texto */
+  }
+#form-nombre .formulario__grupo{
+	margin-top: -10%;
+}
+#form-reemplazo .formulario__grupo-input + .formulario__grupo-input {
+	margin-top: 15px;
+  }

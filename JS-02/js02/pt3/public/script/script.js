@@ -2,6 +2,7 @@
     // Ejercicio 1: Colores con límite de 3
     const formColores = document.getElementById("form-colores");
     const colores = [];
+    //agrega hasta tres elementos a un array
     formColores.addEventListener("submit", function(e) {
       e.preventDefault();
       const aviso = document.getElementById("aviso-colores");
@@ -19,7 +20,7 @@
     });
     
     
-        // Ejercicio 2: Tareas
+        // agrega elementos a un array al principio dem la misma
         const formTareas = document.getElementById("form-tareas");
         const tareas = ["Estudiar", "Lavar ropa"];
         formTareas.addEventListener("submit", function(e) {
@@ -30,7 +31,7 @@
           formTareas.reset();
         });
     
-        // Ejercicio 3: Usuarios
+        // agrega la palabra(en este contexto es un nombre) ingresa al principio del array
         const formUsuarios = document.getElementById("form-usuarios");
         const usuarios = ["Lucía", "Carlos"];
         formUsuarios.addEventListener("submit", function(e) {

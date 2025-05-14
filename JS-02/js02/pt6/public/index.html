@@ -3,134 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <title>Ejercicios con slice()</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .container {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    section {
-      width: 300px;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-    }
-    h2 {
-      margin-top: 0;
-    }
-    input, button {
-      width: 100%;
-      padding: 8px;
-      margin: 5px 0;
-    }
-    .resultado {
-      background-color: #f1f1f1;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      min-height: 40px;
-    }
-  </style>
+  <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
 
-  <h1>Ejercicios con slice()</h1>
+  <main>
+    <h1>Ejercicios con slice()</h1>
 
-  <div class="container">
-    <!-- 1. Copiar primeros 3 elementos -->
-    <section>
-      <h2>1. Primeros 3 números</h2>
-      <form id="form-numeros">
-        <input type="number" id="numero" placeholder="Agregar número">
-        <button type="submit">Agregar número</button>
+    <!-- Ejercicio 1: Primeros 3 números -->
+    <section class="formulario">
+      <div class="formulario__grupo">
+        <label class="formulario__label">1. Primeros 3 números</label>
+        <div class="resultado" id="array-numeros">Números: []</div>
+      </div>
+
+      <form id="form-numeros" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <input 
+            type="number" 
+            id="numero" 
+            placeholder="Agregar número" 
+            class="formulario__input"
+          >
+        </div>
       </form>
-      <div class="resultado" id="array-numeros">Números: []</div>
-      <button onclick="copiarPrimeros3()">Copiar primeros 3</button>
+
+      <div class="formulario__grupo-btn-enviar">
+        <button 
+          type="submit" 
+          form="form-numeros" 
+          class="formulario__btn"
+        >
+          Agregar número
+        </button>
+        <button 
+          type="button" 
+          class="formulario__btn"
+          onclick="copiarPrimeros3()"
+        >
+          Copiar primeros 3
+        </button>
+      </div>
+
       <div class="resultado" id="resultado-numeros"></div>
     </section>
 
-    <!-- 2. Copia parcial de películas -->
-    <section>
-      <h2>2. Copiar películas [2 a 4]</h2>
-      <form id="form-peliculas">
-        <input type="text" id="pelicula" placeholder="Agregar película">
-        <button type="submit">Agregar película</button>
+    <!-- Ejercicio 2: Copiar películas [2 a 4] -->
+    <section class="formulario">
+      <div class="formulario__grupo">
+        <label class="formulario__label">2. Copiar películas [2 a 4]</label>
+        <div class="resultado" id="array-peliculas">Películas: []</div>
+      </div>
+
+      <form id="form-peliculas" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <input 
+            type="text" 
+            id="pelicula" 
+            placeholder="Agregar película" 
+            class="formulario__input"
+          >
+        </div>
       </form>
-      <div class="resultado" id="array-peliculas">Películas: []</div>
-      <button onclick="copiarPeliculas()">Copiar posición 2 a 4</button>
+
+      <div class="formulario__grupo-btn-enviar">
+        <button 
+          type="submit" 
+          form="form-peliculas" 
+          class="formulario__btn"
+        >
+          Agregar película
+        </button>
+        <button 
+          type="button" 
+          class="formulario__btn"
+          onclick="copiarPeliculas()"
+        >
+          Copiar posición 2–4
+        </button>
+      </div>
+
       <div class="resultado" id="resultado-peliculas"></div>
     </section>
 
-    <!-- 3. Últimos 3 elementos -->
-    <section>
-      <h2>3. Últimos 3 elementos</h2>
-      <form id="form-ultimos">
-        <input type="text" id="elementoUltimo" placeholder="Agregar elemento">
-        <button type="submit">Agregar elemento</button>
+    <!-- Ejercicio 3: Últimos 3 elementos -->
+    <section class="formulario">
+      <div class="formulario__grupo">
+        <label class="formulario__label">3. Últimos 3 elementos</label>
+        <div class="resultado" id="array-ultimos">Elementos: []</div>
+      </div>
+
+      <form id="form-ultimos" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <input 
+            type="text" 
+            id="elementoUltimo" 
+            placeholder="Agregar elemento" 
+            class="formulario__input"
+          >
+        </div>
       </form>
-      <div class="resultado" id="array-ultimos">Elementos: []</div>
-      <button onclick="copiarUltimos3()">Copiar últimos 3</button>
+
+      <div class="formulario__grupo-btn-enviar">
+        <button 
+          type="submit" 
+          form="form-ultimos" 
+          class="formulario__btn"
+        >
+          Agregar elemento
+        </button>
+        <button 
+          type="button" 
+          class="formulario__btn"
+          onclick="copiarUltimos3()"
+        >
+          Copiar últimos 3
+        </button>
+      </div>
+
       <div class="resultado" id="resultado-ultimos"></div>
     </section>
-  </div>
+  </main>
 
-  <script>
-    // 1. Primeros 3 elementos de números
-    let numeros = [];
-    document.getElementById("form-numeros").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const num = parseInt(document.getElementById("numero").value.trim());
-      if (!isNaN(num)) {
-        numeros.push(num);
-        document.getElementById("array-numeros").textContent = "Números: [" + numeros.join(", ") + "]";
-        this.reset();
-      }
-    });
-
-    function copiarPrimeros3() {
-      const copia = numeros.slice(0, 3);
-      document.getElementById("resultado-numeros").textContent = "Copia: [" + copia.join(", ") + "]";
-    }
-
-    // 2. Películas de la posición 2 a 4
-    let peliculas = [];
-    document.getElementById("form-peliculas").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const peli = document.getElementById("pelicula").value.trim();
-      if (peli !== "") {
-        peliculas.push(peli);
-        document.getElementById("array-peliculas").textContent = "Películas: [" + peliculas.join(", ") + "]";
-        this.reset();
-      }
-    });
-
-    function copiarPeliculas() {
-      const copia = peliculas.slice(2, 4);
-      document.getElementById("resultado-peliculas").textContent = "Copia parcial: [" + copia.join(", ") + "]";
-    }
-
-    // 3. Últimos 3 elementos
-    let ultimos = [];
-    document.getElementById("form-ultimos").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const el = document.getElementById("elementoUltimo").value.trim();
-      if (el !== "") {
-        ultimos.push(el);
-        document.getElementById("array-ultimos").textContent = "Elementos: [" + ultimos.join(", ") + "]";
-        this.reset();
-      }
-    });
-
-    function copiarUltimos3() {
-      const copia = ultimos.slice(-3);
-      document.getElementById("resultado-ultimos").textContent = "Últimos 3: [" + copia.join(", ") + "]";
-    }
-  </script>
-
+  <script src="script/script.js"></script>
 </body>
 </html>

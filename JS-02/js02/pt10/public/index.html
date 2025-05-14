@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ejercicios con map()</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Ejercicios con map()</h1>
+
+<div class="container">
+
+  <!-- 1. Multiplicar por 3 -->
+  <section>
+    <h2>1. Multiplica por 3</h2>
+    <input type="number" id="inputNumero3" placeholder="Escribe un número">
+    <button onclick="agregarNumero3()">Agregar número</button>
+    <div class="resultado" id="resultado-numeros3">Números: []</div>
+    <button onclick="multiplicarPor3()">Multiplicar por 3</button>
+    <div class="resultado" id="resultado-multiplicados"></div>
+  </section>
+
+  <!-- 2. Nombres en mayúsculas -->
+  <section>
+    <h2>2. Convertir nombres en mayúsculas</h2>
+    <input type="text" id="inputNombreMayus" placeholder="Escribe un nombre">
+    <button onclick="agregarNombreMayus()">Agregar nombre</button>
+    <div class="resultado" id="resultado-nombresMayus">Nombres: []</div>
+    <button onclick="convertirMayusculas()">Convertir</button>
+    <div class="resultado" id="resultado-mayusculas"></div>
+  </section>
+
+  <!-- 3. Agregar IVA -->
+  <section>
+    <h2>3. Precios con IVA (21%)</h2>
+    <input type="number" id="inputPrecio" placeholder="Escribe un precio">
+    <button onclick="agregarPrecio()">Agregar precio</button>
+    <div class="resultado" id="resultado-precios">Precios: []</div>
+    <button onclick="agregarIVA()">Agregar IVA</button>
+    <div class="resultado" id="resultado-iva"></div>
+  </section>
+
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>

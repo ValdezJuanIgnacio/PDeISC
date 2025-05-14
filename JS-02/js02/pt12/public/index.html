@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ejercicios con reduce()</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Ejercicios con reduce()</h1>
+
+<div class="container">
+
+  <!-- 1. Sumar todos los números -->
+  <section>
+    <h2>1. Sumar todos los números</h2>
+    <input type="number" id="inputSuma" placeholder="Ingresá un número">
+    <button onclick="agregarNumeroSuma()">Agregar número</button>
+    <div class="resultado" id="listaSuma">Números: []</div>
+    <button onclick="sumarNumeros()">Sumar</button>
+    <div class="resultado" id="resultadoSuma"></div>
+  </section>
+
+  <!-- 2. Multiplicar todos los números -->
+  <section>
+    <h2>2. Multiplicar todos los números</h2>
+    <input type="number" id="inputMultiplicacion" placeholder="Ingresá un número">
+    <button onclick="agregarNumeroMultiplicacion()">Agregar número</button>
+    <div class="resultado" id="listaMultiplicacion">Números: []</div>
+    <button onclick="multiplicarNumeros()">Multiplicar</button>
+    <div class="resultado" id="resultadoMultiplicacion"></div>
+  </section>
+
+  <!-- 3. Sumar total de precios -->
+  <section>
+    <h2>3. Total de precios</h2>
+    <input type="number" id="inputPrecio" placeholder="Ingresá un precio">
+    <button onclick="agregarPrecio()">Agregar precio</button>
+    <div class="resultado" id="listaPrecios">Precios: []</div>
+    <button onclick="sumarPrecios()">Calcular total</button>
+    <div class="resultado" id="resultadoPrecios"></div>
+  </section>
+
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>

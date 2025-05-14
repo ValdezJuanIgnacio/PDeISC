@@ -3,173 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <title>Ejercicios con includes() - Select</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      margin: 0;
-      background-color: #f8f8f8;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .container {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    section {
-      flex: 1 1 300px;
-      max-width: 350px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease;
-    }
-
-    section:hover {
-      transform: scale(1.02);
-    }
-
-    h2 {
-      font-size: 18px;
-      margin-top: 0;
-    }
-
-    select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      font-size: 15px;
-    }
-
-    .resultado {
-      background-color: #f1f1f1;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      min-height: 40px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
 
-<h1>Ejercicios con includes() - Select</h1>
+  <main>
+    <h1>Ejercicios con includes() - Select</h1>
 
-<div class="container">
-  <!-- 1. Buscar "admin" -->
-  <section>
-    <h2>1. Buscar "admin"</h2>
-    <select id="selectRol">
-      <option value="">Seleccionar rol</option>
-      <option value="usuario">usuario</option>
-      <option value="moderador">moderador</option>
-      <option value="admin">admin</option>
-      <option value="visitante">visitante</option>
-    </select>
-    <button onclick="agregarRol()">Agregar rol</button>
-    <div class="resultado" id="array-roles">Roles: []</div>
-    <button onclick="buscarAdmin()">¿Está 'admin'?</button>
-    <div class="resultado" id="resultado-admin"></div>
-  </section>
+    <section class="formulario">
+      <!-- 1. Buscar "admin" -->
+      <div class="formulario__grupo">
+        <label class="formulario__label">1. Buscar "admin"</label>
+        <div class="resultado" id="array-roles">Roles: </div>
+      </div>
+      <form id="form-roles" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <select id="selectRol" class="formulario__input">
+            <option value="">Seleccionar rol</option>
+            <option value="usuario">usuario</option>
+            <option value="moderador">moderador</option>
+            <option value="admin">admin</option>
+            <option value="visitante">visitante</option>
+          </select>
+        </div>
+      </form>
+      <div class="formulario__grupo-btn-enviar">
+        <button type="submit" form="form-roles" class="formulario__btn">Agregar rol</button>
+        <button type="button" class="formulario__btn" onclick="buscarAdmin()">¿Está 'admin'?</button>
+      </div>
+      <div class="resultado" id="resultado-admin"></div>
+    </section>
 
-  <!-- 2. Buscar "verde" -->
-  <section>
-    <h2>2. Buscar "verde"</h2>
-    <select id="selectColor">
-      <option value="">Seleccionar color</option>
-      <option value="rojo">rojo</option>
-      <option value="azul">azul</option>
-      <option value="verde">verde</option>
-      <option value="amarillo">amarillo</option>
-    </select>
-    <button onclick="agregarColor()">Agregar color</button>
-    <div class="resultado" id="array-colores">Colores: []</div>
-    <button onclick="buscarVerde()">¿Está 'verde'?</button>
-    <div class="resultado" id="resultado-verde"></div>
-  </section>
+    <section class="formulario">
+      <!-- 2. Buscar "verde" -->
+      <div class="formulario__grupo">
+        <label class="formulario__label">2. Buscar "verde"</label>
+        <div class="resultado" id="array-colores">Colores: </div>
+      </div>
+      <form id="form-colores" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <input type="text" id="inputColor" class="formulario__input" placeholder="Escribí un color">
+        </div>
+      </form>
+      <div class="formulario__grupo-btn-enviar">
+        <button type="submit" form="form-colores" class="formulario__btn">Agregar color</button>
+        <button type="button" class="formulario__btn" onclick="buscarVerde()">¿Está 'verde'?</button>
+      </div>
+      <div class="resultado" id="resultado-verde"></div>
+    </section>
 
-  <!-- 3. Números únicos -->
-  <section>
-    <h2>3. Números únicos</h2>
-    <select id="selectNumero">
-      <option value="">Seleccionar número</option>
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="30">30</option>
-      <option value="40">40</option>
-      <option value="50">50</option>
-    </select>
-    <button onclick="agregarNumero()">Agregar número</button>
-    <div class="resultado" id="array-numeros">Números: []</div>
-    <div class="resultado" id="resultado-numero"></div>
-  </section>
-</div>
+    <section class="formulario">
+      <!-- 3. Números únicos -->
+      <div class="formulario__grupo">
+        <label class="formulario__label">3. Números únicos</label>
+        <div class="resultado" id="array-numeros">Números: </div>
+        <div class="resultado" id="resultado-numero"></div>
+      </div>
+      <form id="form-numeros" class="formulario__grupo">
+        <div class="formulario__grupo-input">
+          <input type="number" id="inputNumero" class="formulario__input" placeholder="Escribí un número">
+        </div>
+      </form>
+      <div class="formulario__grupo-btn-enviar">
+        <button type="submit" form="form-numeros" class="formulario__btn">Agregar número</button>
+      </div>
+    </section>
 
-<script>
-  let roles = [];
-  function agregarRol() {
-    const rol = document.getElementById("selectRol").value;
-    if (rol && !roles.includes(rol)) {
-      roles.push(rol);
-      document.getElementById("array-roles").textContent = "Roles: [" + roles.join(", ") + "]";
-    }
-  }
+  </main>
 
-  function buscarAdmin() {
-    const tieneAdmin = roles.includes("admin");
-    document.getElementById("resultado-admin").textContent =
-      tieneAdmin ? "'admin' está en los roles." : "'admin' NO está en los roles.";
-  }
-
-  let colores = [];
-  function agregarColor() {
-    const color = document.getElementById("selectColor").value;
-    if (color && !colores.includes(color)) {
-      colores.push(color);
-      document.getElementById("array-colores").textContent = "Colores: [" + colores.join(", ") + "]";
-    }
-  }
-
-  function buscarVerde() {
-    const tieneVerde = colores.includes("verde");
-    document.getElementById("resultado-verde").textContent =
-      tieneVerde ? "Sí, el color 'verde' está en la lista." : "'verde' no está en la lista.";
-  }
-
-  let numeros = [];
-  function agregarNumero() {
-    const numero = parseInt(document.getElementById("selectNumero").value);
-    if (!isNaN(numero)) {
-      if (!numeros.includes(numero)) {
-        numeros.push(numero);
-        document.getElementById("array-numeros").textContent = "Números: [" + numeros.join(", ") + "]";
-        document.getElementById("resultado-numero").textContent = `Número ${numero} agregado.`;
-      } else {
-        document.getElementById("resultado-numero").textContent = `El número ${numero} ya está en el array.`;
-      }
-    }
-  }
-</script>
+  <script src="script/script.js"></script>
 
 </body>
 </html>

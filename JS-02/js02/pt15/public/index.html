@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decodificación de Mensaje SECRETO</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Decodificador de Mensaje SECRETO</h1>
+
+<div class="container">
+  <!-- Estilo del input de archivo con etiqueta personalizada -->
+  <label for="archivoEntrada">Sube tu archivo SECRETO.IN</label>
+  <input type="file" id="archivoEntrada" accept=".txt">
+  
+  <button onclick="leerYDecodificar()">Decodificar Mensaje</button>
+
+  <div class="output">
+    <h2>Mensaje Cifrado:</h2>
+    <p id="cifrado">-</p>
+
+    <h2>Mensaje Decodificado:</h2>
+    <p id="decodificado">-</p>
+
+    <a id="descargar" href="#" download="SECRETO.OUT" style="display: none;">
+      Descargar mensaje decodificado
+    </a>
+  </div>
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>

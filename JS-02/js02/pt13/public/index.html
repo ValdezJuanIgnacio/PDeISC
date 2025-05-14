@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ejercicios con sort()</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Ejercicios con sort()</h1>
+
+<div class="container">
+
+  <!-- 1. Ordenar números -->
+  <section>
+    <h2>1. Ordenar números</h2>
+    <input type="number" id="inputNumero" placeholder="Ingresá un número">
+    <button onclick="agregarNumero()">Agregar número</button>
+    <div class="resultado" id="resultado-numeros">Números: </div>
+    <button onclick="ordenarNumeros()">Ordenar</button>
+    <div class="resultado" id="resultado-ordenados"></div>
+  </section>
+
+  <!-- 2. Ordenar palabras -->
+  <section>
+    <h2>2. Ordenar palabras</h2>
+    <input type="text" id="inputPalabra" placeholder="Ingresá una palabra">
+    <button onclick="agregarPalabra()">Agregar palabra</button>
+    <div class="resultado" id="resultado-palabras">Palabras: </div>
+    <button onclick="ordenarPalabras()">Ordenar alfabéticamente</button>
+    <div class="resultado" id="resultado-palabras-ordenadas"></div>
+  </section>
+
+  <!-- 3. Ordenar objetos por edad -->
+  <section>
+    <h2>3. Ordenar personas por edad</h2>
+    <input type="text" id="inputNombre" placeholder="Nombre">
+    <input type="number" id="inputEdad" placeholder="Edad">
+    <button onclick="agregarPersona()">Agregar persona</button>
+    <div class="resultado" id="resultado-personas">Personas: </div>
+    <button onclick="ordenarPorEdad()">Ordenar por edad</button>
+    <div class="resultado" id="resultado-personas-ordenadas"></div>
+  </section>
+
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>

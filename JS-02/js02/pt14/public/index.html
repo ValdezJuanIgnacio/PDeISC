@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ejercicios con reverse()</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Ejercicios con reverse()</h1>
+
+<div class="container">
+
+  <!-- 1. Invertir letras -->
+  <section>
+    <h2>1. Invertir letras</h2>
+    <input type="text" id="inputLetras" placeholder="Ingresá una letra">
+    <button onclick="agregarLetra()">Agregar letra</button>
+    <div class="resultado" id="resultado-letras">Letras: []</div>
+    <button onclick="invertirLetras()">Invertir letras</button>
+    <div class="resultado" id="resultado-invertido-letras"></div>
+  </section>
+
+  <!-- 2. Invertir números -->
+  <section>
+    <h2>2. Invertir números</h2>
+    <input type="number" id="inputNumero" placeholder="Ingresá un número">
+    <button onclick="agregarNumero()">Agregar número</button>
+    <div class="resultado" id="resultado-numeros">Números: []</div>
+    <button onclick="invertirNumeros()">Invertir números</button>
+    <div class="resultado" id="resultado-invertido-numeros"></div>
+  </section>
+
+  <!-- 3. Invertir texto -->
+  <section>
+    <h2>3. Invertir texto</h2>
+    <input type="text" id="inputTexto" placeholder="Ingresá un texto">
+    <button onclick="invertirTexto()">Invertir texto</button>
+    <div class="resultado" id="resultado-texto-invertido"></div>
+  </section>
+
+</div>
+
+<script src="script/script.js"></script>
+
+</body>
+</html>
