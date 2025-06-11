@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simon Dice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-white min-h-screen flex flex-col items-center justify-start p-4">
+
+  <!-- Botón de música centrado arriba -->
+<div class="flex justify-center mt-4 mb-6">
+    <audio id="musica-fondo" src="../multimedia/Mfondo.mp3" autoplay loop></audio>
+    <button id="boton-musica" class="bg-amber-950 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl">
+      Silenciar música
+    </button>
+  </div>
+
+  <!-- Contenedor principal -->
+  <div class="flex flex-col md:flex-row items-center justify-center w-full max-w-7xl gap-12 px-4">
+
+    <!-- Sección del juego -->
+    <div class="flex flex-col items-center w-full max-w-md">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6 text-center">Simon Dice</h1>
+
+      <div class="relative w-64 h-64 sm:w-72 sm:h-72 md:w-96 md:h-96 rounded-full bg-black shadow-2xl flex items-center justify-center">
+        <!-- Cuadrantes -->
+        <div id="gameBoard" class="absolute inset-2 grid grid-cols-2 grid-rows-2 gap-2 rounded-full overflow-hidden">
+          <div id="green" class="bg-green-500 rounded-tl-full cursor-pointer transition active:scale-95"></div>
+          <div id="red" class="bg-red-500 rounded-tr-full cursor-pointer transition active:scale-95"></div>
+          <div id="yellow" class="bg-yellow-400 rounded-bl-full cursor-pointer transition active:scale-95"></div>
+          <div id="blue" class="bg-blue-500 rounded-br-full cursor-pointer transition active:scale-95"></div>
+        </div>
+
+        <!-- Botón central -->
+        <div class="z-20 w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-black flex items-center justify-center border-2 border-gray-300 shadow-inner">
+          <button id="startBtn" class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center rounded-full bg-black text-white hover:scale-110 hover:brightness-125 transition-transform duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Estado -->
+      <p id="status" class="text-lg md:text-xl font-medium text-center mt-6 px-4 min-h-[1.5rem]"></p>
+      <p id="errorName" class="hidden text-red-600 mt-2 text-center font-semibold"></p>
+    </div>
+
+    <!-- Ranking -->
+    <aside class="w-full max-w-xs md:max-w-sm bg-gray-900 rounded-lg p-6 shadow-lg text-center">
+      <h2 class="text-2xl font-semibold mb-4">Ranking</h2>
+      <ul id="rankingList" class="text-left space-y-2 max-h-[400px] overflow-y-auto"></ul>
+    </aside>
+  </div>
+
+  <!-- Modal nombre -->
+  <div id="nameModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center hidden">
+    <div class="bg-gray-900 rounded-lg p-6 w-80 max-w-full text-center z-50 shadow-2xl">
+      <h2 class="text-xl font-semibold mb-4">Ingresa tu nombre para jugar</h2>
+      <input id="playerNameInput" type="text" placeholder="Tu nombre" class="w-full p-2 rounded text-black mb-4 focus:outline-none" />
+      <button id="confirmNameBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold transition">Comenzar</button>
+      <p id="modalErrorMsg" class="mt-2 text-sm text-red-600 hidden">Por favor ingresa un nombre para comenzar</p>
+    </div>
+  </div>
+
+  <!-- Navegación inferior -->
+  <div class="mt-8 flex flex-wrap justify-center gap-4 px-4 w-full max-w-4xl">
+    <button onclick="location.href='/'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition whitespace-nowrap">
+      Volver al inicio
+    </button>
+    <button onclick="location.href='/tateti'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition whitespace-nowrap">
+      ❌TaTeTi⭕
+    </button>
+    <button onclick="location.href='/piedrapapelotijeras'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition whitespace-nowrap">
+      🗿 Piedra, 📄papel o tijera✂️
+    </button>
+  </div>
+
+  <script src="../scripts/juego1.js"></script>
+</body>
+</html>

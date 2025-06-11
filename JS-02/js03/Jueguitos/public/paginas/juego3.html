@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Piedra Papel o Tijera</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-between p-4">
+
+  <!-- Controles de música arriba -->
+  <div class="w-full flex justify-center mb-4">
+    <div class="flex items-center gap-4">
+      <audio id="musica-fondo" src="../multimedia/Mfondo.mp3" autoplay loop></audio>
+      <button id="boton-musica" class="bg-amber-950 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl">
+        Silenciar música
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center">
+    <div class="bg-gray-800 p-6 rounded-xl w-full max-w-sm space-y-4 text-center">
+      <h2 class="text-xl font-bold">Piedra, Papel o Tijera</h2>
+      <div class="flex flex-col space-y-3">
+        <div class="flex flex-col gap-2">
+          <button data-mode="machine" class="select-mode bg-blue-600 hover:bg-blue-700 rounded-full py-2 font-semibold">
+            Jugar contra la máquina
+          </button>
+          <button data-mode="player" class="select-mode bg-blue-600 hover:bg-blue-700 rounded-full py-2 font-semibold">
+            Jugar 1 vs 1
+          </button>
+        </div>
+        <div id="nameForm" class="hidden space-y-2 text-left">
+          <input type="text" id="name1" placeholder="Nombre del Jugador 1" class="w-full p-2 rounded bg-gray-700 text-white placeholder-gray-400" />
+          <input type="text" id="name2" placeholder="Nombre del Jugador 2" class="w-full p-2 rounded bg-gray-700 text-white placeholder-gray-400 hidden" />
+          <button id="startBtn" class="w-full bg-green-600 hover:bg-green-700 rounded p-2 font-semibold">Comenzar</button>
+        </div>
+        <p id="errorMsg" class="text-red-500 text-sm hidden">Por favor, ingresá todos los nombres.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Juego principal -->
+  <div id="game" class="hidden w-full max-w-6xl flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center">
+    
+    <!-- Botón cambio de modo -->
+    <div class="flex justify-center w-full md:w-32">
+      <button id="changeModeBtn"
+        class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded transition w-full max-w-[160px] mt-4 md:mt-6">
+        Cambiar modo
+      </button>
+    </div>
+
+    <!-- Consola -->
+    <div class="flex-1 bg-gray-800 rounded-xl p-4 flex flex-col items-center text-center mt-4 md:mt-0">
+      <h1 class="text-2xl font-bold mb-4">Piedra, Papel o Tijera</h1>
+      <p id="currentMode" class="text-sm mb-4"></p>
+      <p id="turnDisplay" class="mb-4"></p>
+      <div class="flex justify-center gap-4 mb-6 flex-wrap">
+        <button data-move="rock" class="play-move bg-blue-700 hover:bg-blue-800 rounded px-4 py-2">🗿 Piedra</button>
+        <button data-move="paper" class="play-move bg-green-700 hover:bg-green-800 rounded px-4 py-2">📄 Papel</button>
+        <button data-move="scissors" class="play-move bg-red-700 hover:bg-red-800 rounded px-4 py-2">✂️ Tijera</button>
+      </div>
+      <p id="resultDisplay" class="text-lg font-semibold"></p>
+    </div>
+
+    <!-- Ranking -->
+    <div class="w-full md:w-64 bg-gray-800 rounded-xl p-4 mt-4 md:mt-0">
+      <h2 class="text-lg font-bold mb-4">Ranking</h2>
+      <ul id="ranking" class="space-y-2 text-left text-sm">
+        <li>Jugador 1: 0</li>
+        <li>Jugador 2 / Máquina: 0</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Botones de navegación -->
+  <div class="w-full flex flex-wrap justify-center gap-4 mt-10">
+    <button onclick="location.href='/'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition">
+      Inicio
+    </button>
+    <button onclick="location.href='/simondice'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition">
+      🔴🟢Simon dice🔵🟡
+    </button>
+    <button onclick="location.href='/tateti'" class="bg-purple-950 hover:bg-blue-950 text-white font-semibold py-2 px-4 rounded-xl transition">
+      ❌TaTeTi⭕
+    </button>
+  </div>
+
+  <script src="../scripts/juego3.js"></script>
+</body>
+</html>
