@@ -1,0 +1,77 @@
+
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background: #fafafa;
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(to bottom, #fefefe, #e7f0ff);
+      padding: 5rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+    }
+
+    header span {
+      color: #ec5e71;
+      font-family: 'Pacifico', cursive;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      background-color: transparent;
+      border-bottom: none;
+      color: #ec5e71;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      border-radius: 30px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+    }
+
+    .btn-success {
+      background-color: #ec5e71;
+      border-color: #ec5e71;
+    }
+
+    .btn-success:hover {
+      background-color: #da4f63;
+      border-color: #da4f63;
+    }
+
+    .btn-warning {
+      background-color: #ffe9c8;
+      color: #333;
+      border: none;
+    }
+
+    .btn-warning:hover {
+      background-color: #ffd49b;
+    }
+
+    .btn-info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: none;
+    }
+
+    #listaNumeros, #resultadoFiltrado {
+      background-color: #ffffff;
+    }
+
+    #mensajeError {
+      font-weight: 500;
+    }
