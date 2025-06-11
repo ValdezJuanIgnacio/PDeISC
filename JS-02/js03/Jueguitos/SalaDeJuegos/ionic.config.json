@@ -1,7 +1,0 @@
-{
-  "name": "SalaDeJuegos",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}

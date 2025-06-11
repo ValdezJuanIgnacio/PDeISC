@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Números</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Helvetica+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background: #fafafa;
+      color: #222;
+    }
+
+    header {
+      background: linear-gradient(to bottom, #fefefe, #e7f0ff);
+      padding: 5rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+    }
+
+    header span {
+      color: #ec5e71;
+      font-family: 'Pacifico', cursive;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      background-color: transparent;
+      border-bottom: none;
+      color: #ec5e71;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      border-radius: 30px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 500;
+    }
+
+    .btn-success {
+      background-color: #ec5e71;
+      border-color: #ec5e71;
+    }
+
+    .btn-success:hover {
+      background-color: #da4f63;
+      border-color: #da4f63;
+    }
+
+    .btn-warning {
+      background-color: #ffe9c8;
+      color: #333;
+      border: none;
+    }
+
+    .btn-warning:hover {
+      background-color: #ffd49b;
+    }
+
+    .btn-info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: none;
+    }
+
+    #listaNumeros, #resultadoFiltrado {
+      background-color: #ffffff;
+    }
+
+    #mensajeError {
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Construye <span>tu</span> propio gestor de números</h1>
+  </header>
+
+  <div class="container py-4">
+    <!-- Ingreso manual -->
+    <div class="card">
+      <div class="card-header">1. Ingresar Números</div>
+      <div class="card-body">
+        <div class="input-group mb-2">
+          <input type="number" id="numInput" class="form-control" placeholder="Ingrese un número" />
+          <button class="btn btn-success" onclick="agregarNumero()">Agregar</button>
+        </div>
+        <div id="mensajeError" class="text-danger mb-2" style="display: none;"></div>
+        <div class="mb-2">
+          <button class="btn btn-warning" onclick="descargarTxt()">Descargar TXT</button>
+        </div>
+        <div>
+          <h6>Números ingresados (<span id="contador">0</span>/20):</h6>
+          <div id="listaNumeros" class="border p-3 rounded"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carga de archivo -->
+    <div class="card">
+      <div class="card-header">2. Cargar y Filtrar Archivo</div>
+      <div class="card-body">
+        <input type="file" accept=".txt" class="form-control mb-3" onchange="leerArchivo(event)" />
+        <div id="resultadoFiltrado" class="p-3 rounded border d-none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    let numeros = [];
+    let filtradosResultado = ''; // ✅ Nueva variable para almacenar resultado filtrado
+
+    function mostrarError(mensaje) {
+      const errorDiv = document.getElementById('mensajeError');
+      errorDiv.innerText = mensaje;
+      errorDiv.style.display = 'block';
+    }
+
+    function limpiarError() {
+      const errorDiv = document.getElementById('mensajeError');
+      errorDiv.innerText = '';
+      errorDiv.style.display = 'none';
+    }
+
+    function agregarNumero() {
+      limpiarError();
+      const input = document.getElementById('numInput');
+      const num = parseInt(input.value);
+      if (isNaN(num)) {
+        mostrarError("Ingrese un número válido.");
+        return;
+      }
+
+      if (numeros.length >= 20) {
+        mostrarError("No puede ingresar más de 20 números.");
+        return;
+      }
+
+      numeros.push(num);
+      input.value = '';
+      actualizarLista();
+    }
+
+    function actualizarLista() {
+      document.getElementById('contador').innerText = numeros.length;
+      document.getElementById('listaNumeros').innerText = numeros.join(', ');
+    }
+
+    function descargarTxt() {
+      limpiarError();
+      if (numeros.length < 10) {
+        mostrarError("Debe ingresar al menos 10 números antes de descargar.");
+        return;
+      }
+
+      const blob = new Blob([numeros.join('\n')], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'numeros.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function leerArchivo(event) {
+      const archivo = event.target.files[0];
+      if (!archivo) return;
+
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const lineas = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
+        const numerosArchivo = lineas.map(Number).filter(n => !isNaN(n));
+
+        const validos = numerosArchivo.filter(n => {
+          const str = n.toString();
+          return str[0] === str[str.length - 1];
+        }).sort((a, b) => a - b);
+
+        const total = numerosArchivo.length;
+        const porcentaje = total > 0 ? ((validos.length / total) * 100).toFixed(2) : 0;
+
+        // ✅ Guardamos en variable global
+        filtradosResultado = validos.join('\n');
+
+        const salida = `
+          <h5 class="mb-3">Resultados del Filtrado</h5>
+          <p><strong>Números válidos:</strong> ${validos.join(', ') || '(ninguno)'}</p>
+          <p><strong>Total válidos:</strong> ${validos.length}</p>
+          <p><strong>Total inválidos:</strong> ${total - validos.length}</p>
+          <p><strong>Porcentaje válidos:</strong> ${porcentaje}%</p>
+          <button class="btn btn-info mt-2" onclick="descargarFiltrados()">Descargar filtrados</button>
+        `;
+        const resultado = document.getElementById('resultadoFiltrado');
+        resultado.innerHTML = salida;
+        resultado.classList.remove('d-none');
+      };
+      lector.readAsText(archivo);
+    }
+
+    function descargarFiltrados() {
+      if (!filtradosResultado) {
+        alert('No hay datos para descargar.');
+        return;
+      }
+
+      const blob = new Blob([filtradosResultado], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'filtrados.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
