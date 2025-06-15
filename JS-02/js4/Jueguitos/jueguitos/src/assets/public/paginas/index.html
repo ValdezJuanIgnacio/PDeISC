@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Juegos Interactivos</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-6 min-h-screen flex flex-col items-center">
+
+  <h1 class="text-4xl font-bold mb-10 text-center">Selecciona un juego</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-7xl">
+
+    <!-- Simón Dice Preview -->
+    <a href="juego1.html" class="bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:brightness-110 cursor-pointer">
+      <h2 class="text-xl font-bold mb-4">Simón Dice</h2>
+      <div class="relative w-48 h-48 rounded-full bg-black shadow-inner flex items-center justify-center">
+        <div class="absolute inset-2 grid grid-cols-2 grid-rows-2 gap-2 rounded-full overflow-hidden">
+          <div class="bg-green-500 rounded-tl-full"></div>
+          <div class="bg-red-500 rounded-tr-full"></div>
+          <div class="bg-yellow-400 rounded-bl-full"></div>
+          <div class="bg-blue-500 rounded-br-full"></div>
+        </div>
+        <div class="z-20 w-12 h-12 rounded-full bg-black border-2 border-gray-300 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+          </svg>
+        </div>
+      </div>
+    </a>
+
+    <!-- Ta-Te-Ti Preview -->
+    <a href="/tateti" class="bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:brightness-110 cursor-pointer">
+      <h2 class="text-xl font-bold mb-4">Ta-Te-Ti</h2>
+      <div class="grid grid-cols-3 grid-rows-3 gap-1 w-48 h-48">
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">X</div>
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">O</div>
+        <div class="bg-gray-700 rounded"></div>
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">O</div>
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">X</div>
+        <div class="bg-gray-700 rounded"></div>
+        <div class="bg-gray-700 rounded"></div>
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">X</div>
+        <div class="bg-gray-700 text-2xl flex items-center justify-center rounded">O</div>
+      </div>
+    </a>
+
+    <!-- Piedra, Papel o Tijera Preview -->
+    <a href="/piedrapapelotijeras" class="bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:brightness-110 cursor-pointer">
+      <h2 class="text-xl font-bold mb-4">Piedra, Papel o Tijera</h2>
+      <div class="flex justify-center gap-4 mb-4 flex-wrap">
+        <button disabled class="bg-blue-700 px-3 py-2 rounded text-2xl">🗿</button>
+        <button disabled class="bg-green-700 px-3 py-2 rounded text-2xl">📄</button>
+        <button disabled class="bg-red-700 px-3 py-2 rounded text-2xl">✂️</button>
+      </div>
+      <p class="text-sm text-gray-400">¡Elegí tu jugada y enfrentate al azar!</p>
+    </a>
+
+  </div>
+
+</body>
+</html>
