@@ -1,0 +1,44 @@
+
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+
+    h1, h2 {
+      font-family: 'Pacifico', cursive;
+      color: #343a40;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      background-color: #e9ecef;
+      font-weight: bold;
+    }
+
+    .resultado-filtro {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .resultado-filtro.mostrar {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn {
+      font-weight: 500;
+    }

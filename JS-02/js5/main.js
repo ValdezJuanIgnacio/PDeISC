@@ -2,12 +2,14 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const port = 3001;
-const personas = []; // Array 
+const personas = []; // Array
 
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, "public")));
 
-// Ruta para guardar datos desde un formulario
+app.use('/js', express.static(path.join(__dirname, "js")));
+
 app.post('/enviar', (req, res) => {
     const persona = {
         usr: req.body.usr,

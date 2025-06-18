@@ -1,12 +1,13 @@
-import { CZooAnimal } from './CZooAnimal.js';
-import * as zooManager from './zooManager.js';
+import { CZooAnimal } from './CZoo.js';
+import * as zooManager from './zoofunciones.js';
 
 window.onload = () => zooManager.init();
-
+//almacenamiento de las variables del formulario
 document.getElementById("formAnimal").addEventListener("submit", function (e) {
   e.preventDefault();
+  
   const animal = new CZooAnimal(
-    document.getElementById("idAnimal").value,
+    null, 
     document.getElementById("nombre").value,
     parseInt(document.getElementById("jaula").value),
     parseInt(document.getElementById("tipoAnimal").value),
@@ -16,7 +17,7 @@ document.getElementById("formAnimal").addEventListener("submit", function (e) {
   this.reset();
   zooManager.renderTabla();
 });
-
+//acceder a las funciones de 
 window.crearJaulas = zooManager.crearJaulas;
 window.agregarTipo = zooManager.agregarTipo;
 window.filtrarAnimalesPeso = zooManager.filtrarAnimalesPeso;
