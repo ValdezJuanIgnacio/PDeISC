@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Container, Navbar, Nav, Button } from "react-bootstrap";
+import { Container, Navbar, Nav } from "react-bootstrap";
 import Inicio from "./paginas/Inicio.jsx";
 import Detalle from "./paginas/Detalle.jsx";
 import Crear from "./paginas/Crear.jsx";
@@ -38,14 +38,12 @@ function App() {
   };
 
   const eliminarTarea = (id) => {
-    // La eliminación solo ocurre si la tarea está completa
+    // Eliminación solo si la tarea está completa
     const tareaAEliminar = tareas.find((t) => t.id === id);
     if (tareaAEliminar && tareaAEliminar.estado === "completa") {
       setTareas(tareas.filter((t) => t.id !== id));
-      alert("Tarea eliminada correctamente.");
-    } else {
-      alert("Solo puedes eliminar tareas completadas.");
     }
+    // No se muestran alertas ni mensajes aquí
   };
 
   return (
@@ -61,7 +59,6 @@ function App() {
             </Nav.Link>
           </Nav>
 
-          {/* 👉 Ahora usamos el componente */}
           <Descargar tareas={tareas} />
         </Container>
       </Navbar>

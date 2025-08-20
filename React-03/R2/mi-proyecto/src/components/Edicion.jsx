@@ -8,7 +8,6 @@ function Edicion({ tareas, onModificar }) {
 
   const tareaOriginal = tareas.find((t) => t.id === parseInt(id));
 
-  // Si la tarea no existe, redirige
   if (!tareaOriginal) {
     return <Navigate to="/" replace />;
   }
