@@ -10,7 +10,7 @@ const appName = appJson.name;
 // Registro del componente principal
 AppRegistry.registerComponent(appName, () => App);
 
-// 👇 Esta parte es necesaria para la web
+// Esta parte es necesaria para la web
 if (typeof document !== 'undefined') {
   AppRegistry.runApplication(appName, {
     rootTag: document.getElementById('root'),
