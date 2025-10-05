@@ -140,12 +140,12 @@ const App = () => {
           </View>
         </ComponenteGuia>
 
-        {/* =================== Modal =================== */}
-        <ModalDemo />
 
         {/* =================== FlatList =================== */}
         <FlatListDemo />
 
+        {/* =================== Modal =================== */}
+        <ModalDemo />
         <View style={{ height: 50 }} />
       </ScrollView>
     </SafeAreaView>
