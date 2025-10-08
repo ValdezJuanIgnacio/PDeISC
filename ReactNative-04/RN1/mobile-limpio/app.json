@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "mobile-sdk54",
-    "slug": "mobile-sdk54",
+    "name": "mobile-limpio",
+    "slug": "mobile-limpio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -22,10 +22,25 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.mobilesdk54"
+      "package": "com.zjiv.mobilelimpio",
+      "networkSecurityConfig": {
+        "cleartextTrafficPermitted": true,
+        "domains": [
+          {
+            "domain": "192.168.100.66", 
+            "cleartextTrafficPermitted": true,
+            "includeSubdomains": true
+          }
+        ]
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "acdcb757-6abe-47fc-991d-aac4be32bb20"
+      }
     }
   }
 }

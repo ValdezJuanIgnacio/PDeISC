@@ -21,9 +21,28 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint (para verificar que el servidor funciona)
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 // Ruta de prueba
 app.get("/", (req, res) => {
   res.json({ message: "API funcionando correctamente" });
+});
+
+// Probar conexión a base de datos
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const [result] = await db.execute("SELECT 1 + 1 AS result");
+    res.json({ success: true, database: "conectada", result });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      database: "desconectada",
+      error: error.message 
+    });
+  }
 });
 
 // Registro de usuario
@@ -61,7 +80,6 @@ app.post("/api/register", async (req, res) => {
     }
 
     console.log("Verificando si usuario existe...");
-    // Verificar si el usuario ya existe - CAMBIADO A .execute()
     const [existingUser] = await db.execute(
       "SELECT * FROM users WHERE name = ?",
       [name]
@@ -81,11 +99,9 @@ app.post("/api/register", async (req, res) => {
     }
 
     console.log("Encriptando contraseña...");
-    // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
     console.log("Insertando usuario en la base de datos...");
-    // Insertar usuario - CAMBIADO A .execute()
     await db.execute("INSERT INTO users (name, password) VALUES (?, ?)", [
       name,
       hashedPassword,
@@ -121,7 +137,6 @@ app.post("/api/login", async (req, res) => {
       });
     }
 
-    // Buscar usuario - CAMBIADO A .execute()
     const [users] = await db.execute("SELECT * FROM users WHERE name = ?", [
       name,
     ]);
@@ -135,7 +150,6 @@ app.post("/api/login", async (req, res) => {
 
     const user = users[0];
 
-    // Verificar contraseña
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
@@ -147,7 +161,6 @@ app.post("/api/login", async (req, res) => {
 
     console.log("Login exitoso:", name);
 
-    // Login exitoso
     res.json({
       success: true,
       message: "Login exitoso",
@@ -165,7 +178,48 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
+// Middleware de manejo de errores
+app.use((err, req, res, next) => {
+  console.error("Error no manejado:", err);
+  res.status(500).json({
+    success: false,
+    message: "Error interno del servidor",
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// Iniciar servidor con mejor manejo de errores
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Escuchando en todas las interfaces de red`);
+  console.log(`Endpoints disponibles:`);
+  console.log(`  - GET  http://localhost:${PORT}/health`);
+  console.log(`  - GET  http://localhost:${PORT}/api/test-db`);
+  console.log(`  - POST http://localhost:${PORT}/api/register`);
+  console.log(`  - POST http://localhost:${PORT}/api/login`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`El puerto ${PORT} ya está en uso`);
+    console.error(`Intenta con otro puerto o cierra la aplicación que lo está usando`);
+  } else {
+    console.error('Error al iniciar el servidor:', err);
+  }
+  process.exit(1);
+});
+
+// Manejo de señales de terminación
+process.on('SIGTERM', () => {
+  console.log('SIGTERM recibido, cerrando servidor...');
+  server.close(() => {
+    console.log('Servidor cerrado');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('\nSIGINT recibido, cerrando servidor...');
+  server.close(() => {
+    console.log('Servidor cerrado');
+    process.exit(0);
+  });
 });

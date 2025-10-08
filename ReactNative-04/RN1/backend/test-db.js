@@ -1,33 +1,57 @@
-const mysql = require("mysql2/promise");
-require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
-async function testConnection() {
-  console.log("Configuración:");
-  console.log("DB_HOST:", process.env.DB_HOST);
-  console.log("DB_USER:", process.env.DB_USER);
-  console.log(
-    "DB_PASSWORD:",
-    process.env.DB_PASSWORD === "" ? "(vacío)" : "(tiene valor)"
-  );
-  console.log("DB_NAME:", process.env.DB_NAME);
+const app = express();
+const PORT = 3000;
 
-  try {
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-    });
+app.use(cors());
+app.use(express.json());
 
-    console.log("✅ Conexión exitosa a MySQL");
+// Ruta de prueba simple
+app.get("/health", (req, res) => {
+  console.log(" Petición recibida en /health");
+  res.json({ 
+    status: "ok", 
+    timestamp: new Date().toISOString(),
+    message: "Servidor funcionando correctamente"
+  });
+});
 
-    const [rows] = await connection.execute("SELECT 1 + 1 AS result");
-    console.log("Prueba de consulta:", rows);
+app.get("/api/test", (req, res) => {
+  console.log(" Petición recibida en /api/test");
+  res.json({ 
+    success: true, 
+    message: "API funcionando" 
+  });
+});
 
-    await connection.end();
-  } catch (error) {
-    console.error("❌ Error de conexión:", error.message);
+app.post("/api/test-post", (req, res) => {
+  console.log(" Petición POST recibida");
+  console.log("Body:", req.body);
+  res.json({ 
+    success: true, 
+    message: "POST funcionando",
+    received: req.body
+  });
+});
+
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log("\n=================================");
+  console.log(` Servidor de prueba iniciado`);
+  console.log(`Puerto: ${PORT}`);
+  console.log(`\nPrueba desde el navegador:`);
+  console.log(`  http://localhost:${PORT}/health`);
+  console.log(`\nPrueba desde tu móvil/emulador:`);
+  console.log(`  Obtén tu IP con: ipconfig (Windows) o ifconfig (Mac/Linux)`);
+  console.log(`  Luego usa: http://TU_IP:${PORT}/health`);
+  console.log("=================================\n");
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(` El puerto ${PORT} ya está en uso`);
+    console.error(`Cierra el otro proceso o usa otro puerto`);
+  } else {
+    console.error(' Error:', err);
   }
-}
-
-testConnection();
+});
