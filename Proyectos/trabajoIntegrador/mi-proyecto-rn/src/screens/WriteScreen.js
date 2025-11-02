@@ -51,7 +51,7 @@ export default function WriteScreen({ navigation }) {
   const [synopsis, setSynopsis] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [currentBookId, setCurrentBookId] = useState(null);
-  const [bookStatus, setBookStatus] = useState("draft"); // NUEVO: Estado del libro
+  const [bookStatus, setBookStatus] = useState("draft");
 
   // Estados para capítulos
   const [chapters, setChapters] = useState([]);
@@ -68,8 +68,11 @@ export default function WriteScreen({ navigation }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showTitleModal, setShowTitleModal] = useState(false);
   const [tempTitle, setTempTitle] = useState("");
-  // Mensaje de depuración visible en pantalla (útil para web donde Alert puede fallar)
   const [publishDebugMessage, setPublishDebugMessage] = useState(null);
+
+  // NUEVO: Estado para modal de confirmación de publicación en web
+  const [showPublishConfirmModal, setShowPublishConfirmModal] = useState(false);
+  const [pendingPublishAction, setPendingPublishAction] = useState(null);
 
   useEffect(() => {
     loadMyBooks();
@@ -120,7 +123,7 @@ export default function WriteScreen({ navigation }) {
     setGenre(book.genre);
     setSynopsis(book.synopsis);
     setCoverUrl(book.cover_image_url);
-    setBookStatus(book.status); // NUEVO: Guardar el estado del libro
+    setBookStatus(book.status);
     setShowBookSelector(false);
     setShowBookForm(false);
 
@@ -224,7 +227,7 @@ export default function WriteScreen({ navigation }) {
       console.log("✅ Libro creado:", response.data);
       const newBookId = response.data.bookId || response.data.id;
       setCurrentBookId(newBookId);
-      setBookStatus("draft"); // NUEVO: El libro comienza como draft
+      setBookStatus("draft");
       setShowBookForm(false);
       setShowBookSelector(false);
 
@@ -322,56 +325,47 @@ export default function WriteScreen({ navigation }) {
         // Actualizar capítulo existente
         console.log("📝 Actualizando capítulo:", currentChapter.id);
         console.log("Datos a enviar:", chapterData);
-
         response = await chaptersAPI.update(currentChapter.id, chapterData);
-
-        if (!response?.data) {
-          throw new Error("No se recibió respuesta del servidor al actualizar");
-        }
-
-        console.log("✅ Capítulo actualizado correctamente");
-        Alert.alert("Éxito", "Capítulo actualizado");
+        Alert.alert("Éxito", "Capítulo actualizado correctamente");
       } else {
         // Crear nuevo capítulo
-        console.log("📝 Creando nuevo capítulo");
+        console.log("➕ Creando nuevo capítulo para el libro:", currentBookId);
         console.log("Datos a enviar:", {
           ...chapterData,
           book_id: currentBookId,
-          chapter_number: chapters.length + 1,
         });
-
         response = await chaptersAPI.create({
           ...chapterData,
           book_id: currentBookId,
-          chapter_number: chapters.length + 1,
         });
-
-        if (!response?.data) {
-          throw new Error("No se recibió respuesta del servidor al crear");
-        }
-
-        console.log("✅ Capítulo creado correctamente");
-        Alert.alert("Éxito", "Capítulo guardado");
+        Alert.alert("Éxito", "Capítulo guardado correctamente");
       }
 
-      // Limpiar el editor
-      setChapterTitle("");
-      setChapterContent("");
-      setCurrentChapter(null);
-      setEditorMode(false);
-      clearDraft();
+      console.log("✅ Operación exitosa:", response.data);
+
+      // Limpiar borrador
+      await clearDraft();
 
       // Recargar capítulos
       await loadBookChapters(currentBookId);
+
+      // Cerrar editor
+      setEditorMode(false);
+      setCurrentChapter(null);
+      setChapterTitle("");
+      setChapterContent("");
     } catch (error) {
       console.error("❌ Error saving chapter:", error);
-      console.error("Error completo:", error);
-      console.error("Error response:", error.response?.data);
+      console.error("Error details:", {
+        response: error.response?.data,
+        status: error.response?.status,
+        message: error.message,
+      });
 
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "No se pudo guardar el capítulo. Verifica que todos los campos estén completos.";
+        "No se pudo guardar el capítulo. Por favor intenta nuevamente.";
 
       Alert.alert("Error", errorMessage);
     } finally {
@@ -380,32 +374,30 @@ export default function WriteScreen({ navigation }) {
   };
 
   const handleEditChapter = (chapter) => {
-    console.log("✏️ Editando capítulo:", chapter.id);
+    console.log("✏️ Editando capítulo:", chapter.title);
     setCurrentChapter(chapter);
     setChapterTitle(chapter.title);
     setChapterContent(chapter.content);
     setEditorMode(true);
   };
 
-  const handleDeleteChapter = (chapter) => {
+  const handleDeleteChapter = (chapterId) => {
     Alert.alert(
-      "Confirmar eliminación",
-      `¿Estás seguro de que deseas eliminar el capítulo "${chapter.title}"?`,
+      "Eliminar capítulo",
+      "¿Estás seguro de que deseas eliminar este capítulo?",
       [
         { text: "Cancelar", style: "cancel" },
         {
           text: "Eliminar",
           style: "destructive",
           onPress: async () => {
-            setLoading(true);
             try {
-              console.log("🗑️ Eliminando capítulo:", chapter.id);
-              await chaptersAPI.delete(chapter.id);
-              console.log("✅ Capítulo eliminado");
+              setLoading(true);
+              await chaptersAPI.delete(chapterId);
               Alert.alert("Éxito", "Capítulo eliminado");
               await loadBookChapters(currentBookId);
             } catch (error) {
-              console.error("❌ Error deleting chapter:", error);
+              console.error("Error deleting chapter:", error);
               Alert.alert("Error", "No se pudo eliminar el capítulo");
             } finally {
               setLoading(false);
@@ -416,27 +408,59 @@ export default function WriteScreen({ navigation }) {
     );
   };
 
+  const handleNewChapter = () => {
+    // Mostrar modal para ingresar título
+    setTempTitle("");
+    setShowTitleModal(true);
+  };
+
   const handleSubmitTitle = () => {
     if (!tempTitle.trim()) {
       Alert.alert("Error", "El título no puede estar vacío");
       return;
     }
-    setChapterTitle(tempTitle);
-    setTempTitle("");
+    setChapterTitle(tempTitle.trim());
+    setChapterContent("");
+    setCurrentChapter(null);
     setShowTitleModal(false);
     setEditorMode(true);
   };
 
-  const renderTitleModal = () => (
+  const ModalTituloCapitulo = () => (
     <Modal
-      animationType="fade"
       visible={showTitleModal}
-      transparent={true}
+      transparent
+      animationType="fade"
       onRequestClose={() => setShowTitleModal(false)}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Nuevo Capítulo</Text>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            maxWidth: 400,
+            backgroundColor: "#fff",
+            borderRadius: 12,
+            padding: 20,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              marginBottom: 15,
+              textAlign: "center",
+            }}
+          >
+            Título del Capítulo
+          </Text>
           <TextInput
             style={styles.input}
             placeholder="Ingresa el título del capítulo"
@@ -462,7 +486,8 @@ export default function WriteScreen({ navigation }) {
     </Modal>
   );
 
-  // NUEVA FUNCIÓN: Publicar o actualizar libro
+  // ===== INICIO DE LA FUNCIÓN CORREGIDA =====
+  // NUEVA FUNCIÓN: Publicar o actualizar libro - CON MEJOR MANEJO WEB
   const handlePublishBook = async () => {
     console.log("🔵 Iniciando proceso de publicación...");
 
@@ -494,17 +519,15 @@ export default function WriteScreen({ navigation }) {
       ? "¿Deseas actualizar la publicación de este libro? Los cambios serán visibles inmediatamente para los lectores."
       : "¿Deseas publicar este libro? Será visible para todos los lectores en la sección de Explorar.";
 
-    // Extraemos la lógica de publicación para poder invocarla desde web (window.confirm)
-    const publishConfirmed = async () => {
-      console.log("🔔 Usuario confirmó acción de publicación", {
+    // Función que ejecuta la publicación
+    const executePublish = async () => {
+      console.log("🔔 Ejecutando publicación confirmada", {
         action,
         currentBookId,
       });
 
-      // Mostrar mensaje inicial en el banner
       setPublishDebugMessage("Iniciando proceso de publicación...");
 
-      // timeout para mensajes largos
       let timeoutId;
 
       // Alert nativo solo en móviles
@@ -568,7 +591,6 @@ export default function WriteScreen({ navigation }) {
           if (Platform.OS !== "web") {
             Alert.alert("Error de publicación", JSON.stringify(serverMsg));
           } else {
-            // En web mostramos también un alert de navegador para visibilidad
             try {
               window.alert(JSON.stringify(serverMsg));
             } catch (e) {
@@ -630,297 +652,179 @@ export default function WriteScreen({ navigation }) {
       }
     };
 
-    // En web usar confirm ya que Alert.alert no muestra botones
+    // ===== CAMBIO PRINCIPAL: Usar modal personalizado en web =====
     if (Platform.OS === "web") {
-      let confirmed = false;
-      try {
-        confirmed = window.confirm(message);
-      } catch (e) {
-        console.log("window.confirm failed", e);
-      }
-      if (!confirmed) {
-        console.log("Publicación cancelada (web)");
-        return;
-      }
-      await publishConfirmed();
+      console.log("🌐 Plataforma web detectada - usando modal personalizado");
+      // En web, mostrar nuestro propio modal de confirmación
+      setPendingPublishAction({
+        title,
+        message,
+        onConfirm: executePublish,
+      });
+      setShowPublishConfirmModal(true);
     } else {
+      // En móvil, usar Alert.alert nativo
       Alert.alert(title, message, [
         {
           text: "Cancelar",
           style: "cancel",
-          onPress: () => console.log("Publicación cancelada"),
+          onPress: () => console.log("Publicación cancelada (móvil)"),
         },
         {
-          text: action === "publicar" ? "Publicar" : "Actualizar",
-          style: "default",
-          onPress: publishConfirmed,
+          text: isPublished ? "Actualizar" : "Publicar",
+          onPress: executePublish,
         },
       ]);
     }
   };
 
-  // NUEVA FUNCIÓN: Despublicar libro
+  // NUEVO: Modal de confirmación para web
+  const PublishConfirmModal = () => (
+    <Modal
+      visible={showPublishConfirmModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setShowPublishConfirmModal(false)}
+    >
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "rgba(0,0,0,0.6)",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            maxWidth: 450,
+            backgroundColor: "#fff",
+            borderRadius: 16,
+            padding: 24,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.2,
+            shadowRadius: 16,
+            elevation: 12,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: "700",
+              marginBottom: 12,
+              color: "#333",
+              textAlign: "center",
+            }}
+          >
+            {pendingPublishAction?.title || "Confirmar"}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#666",
+              textAlign: "center",
+              marginBottom: 24,
+              lineHeight: 24,
+            }}
+          >
+            {pendingPublishAction?.message || "¿Deseas continuar?"}
+          </Text>
+
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => {
+                console.log("Publicación cancelada por el usuario (web modal)");
+                setShowPublishConfirmModal(false);
+                setPendingPublishAction(null);
+              }}
+            >
+              <Text style={[styles.buttonText, styles.cancelButtonText]}>
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "#4CAF50" }]}
+              onPress={async () => {
+                console.log(
+                  "Publicación confirmada por el usuario (web modal)"
+                );
+                setShowPublishConfirmModal(false);
+                if (pendingPublishAction?.onConfirm) {
+                  await pendingPublishAction.onConfirm();
+                }
+                setPendingPublishAction(null);
+              }}
+            >
+              <Text style={styles.buttonText}>
+                {bookStatus === "published" ? "Actualizar" : "Publicar"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
+  // Función para desbloquear (volver a draft)
   const handleUnpublishBook = async () => {
     if (!currentBookId) {
       Alert.alert("Error", "No hay libro seleccionado");
       return;
     }
 
-    Alert.alert(
-      "Despublicar Libro",
-      "¿Deseas quitar este libro de la sección pública? Ya no será visible para los lectores.",
-      [
+    if (bookStatus !== "published") {
+      Alert.alert(
+        "Aviso",
+        "Este libro no está publicado, no es necesario despublicarlo"
+      );
+      return;
+    }
+
+    const confirmMessage =
+      "¿Deseas desbloquear este libro? Dejará de ser visible en la biblioteca pública y podrás editarlo nuevamente.";
+
+    const executeUnpublish = async () => {
+      setLoading(true);
+      try {
+        console.log("🔓 Desbloqueando libro:", currentBookId);
+        await booksAPI.update(currentBookId, { status: "draft" });
+
+        setBookStatus("draft");
+        Alert.alert(
+          "Éxito",
+          "Libro desbloqueado. Ahora puedes editar capítulos."
+        );
+
+        await loadMyBooks();
+      } catch (error) {
+        console.error("❌ Error al desbloquear:", error);
+        Alert.alert(
+          "Error",
+          error.response?.data?.message || "No se pudo desbloquear el libro"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (Platform.OS === "web") {
+      if (window.confirm(confirmMessage)) {
+        await executeUnpublish();
+      }
+    } else {
+      Alert.alert("Desbloquear Libro", confirmMessage, [
         { text: "Cancelar", style: "cancel" },
-        {
-          text: "Despublicar",
-          style: "destructive",
-          onPress: async () => {
-            setLoading(true);
-            try {
-              console.log("📥 Despublicando libro...");
-              // Cambiar el status a draft mediante update
-              await booksAPI.update(currentBookId, {
-                title: bookTitle,
-                genre,
-                synopsis,
-                cover_image_url: coverUrl,
-                status: "draft",
-              });
-
-              setBookStatus("draft");
-              Alert.alert("Éxito", "Libro despublicado correctamente");
-              await loadMyBooks();
-            } catch (error) {
-              console.error("❌ Error al despublicar:", error);
-              Alert.alert("Error", "No se pudo despublicar el libro");
-            } finally {
-              setLoading(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const resetForm = () => {
-    setBookTitle("");
-    setGenre("");
-    setSynopsis("");
-    setCoverUrl("");
-    setChapterTitle("");
-    setChapterContent("");
-    setCurrentBookId(null);
-    setCurrentChapter(null);
-    setChapters([]);
-    setBookStatus("draft");
-    setShowBookForm(false);
-    setShowBookSelector(true);
-    setEditorMode(false);
-    clearDraft();
-    loadMyBooks();
-  };
-
-  const openEditBookModal = () => {
-    setShowEditModal(true);
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "draft":
-        return "#999";
-      case "submitted":
-        return "#FF9800";
-      case "published":
-        return "#4CAF50";
-      case "archived":
-        return "#F44336";
-      default:
-        return "#999";
+        { text: "Desbloquear", onPress: executeUnpublish },
+      ]);
     }
   };
 
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case "draft":
-        return "Borrador";
-      case "submitted":
-        return "En revisión";
-      case "published":
-        return "Publicado";
-      case "archived":
-        return "Archivado";
-      default:
-        return status;
-    }
-  };
+  // ======== RENDERIZADO ========
 
-  // Vista de selección de libro
-  if (showBookSelector) {
-    return (
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Escribir</Text>
-          <Text style={styles.headerSubtitle}>
-            Selecciona un libro o crea uno nuevo
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Mis Libros</Text>
-
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#B87D5F"
-              style={styles.loader}
-            />
-          ) : myBooks.length > 0 ? (
-            myBooks.map((book) => (
-              <TouchableOpacity
-                key={book.id}
-                style={styles.bookItem}
-                onPress={() => selectExistingBook(book)}
-              >
-                <View style={styles.bookItemHeader}>
-                  <Text style={styles.bookItemTitle}>{book.title}</Text>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      { backgroundColor: getStatusColor(book.status) },
-                    ]}
-                  >
-                    <Text style={styles.statusText}>
-                      {getStatusLabel(book.status)}
-                    </Text>
-                  </View>
-                </View>
-                <Text style={styles.bookItemGenre}>{book.genre}</Text>
-                <Text style={styles.bookItemSynopsis} numberOfLines={2}>
-                  {book.synopsis}
-                </Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                No tienes libros todavía
-              </Text>
-              <Text style={styles.emptyStateSubtext}>
-                Crea tu primer libro para comenzar a escribir
-              </Text>
-            </View>
-          )}
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setShowBookSelector(false);
-              setShowBookForm(true);
-            }}
-          >
-            <Text style={styles.buttonText}>+ Crear Nuevo Libro</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    );
-  }
-
-  // Vista del formulario de libro
-  if (showBookForm) {
-    return (
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => {
-              setShowBookForm(false);
-              setShowBookSelector(true);
-              // Limpiar el formulario
-              setBookTitle("");
-              setGenre("");
-              setSynopsis("");
-              setCoverUrl("");
-            }}
-            style={styles.backButtonContainer}
-          >
-            <Text style={styles.backButton}>← Volver</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Crear Nuevo Libro</Text>
-          <Text style={styles.formSubtitle}>
-            Completa la información básica
-          </Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Título del libro"
-            value={bookTitle}
-            onChangeText={setBookTitle}
-          />
-
-          <Text style={styles.label}>Género</Text>
-          {Platform.OS === "web" ? (
-            <select
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              style={{
-                backgroundColor: "#fff",
-                padding: 15,
-                borderRadius: 10,
-                marginBottom: 15,
-                fontSize: 16,
-                borderWidth: 1,
-                borderColor: "#e0e0e0",
-              }}
-            >
-              <option value="">Selecciona un género</option>
-              {GENRES.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={genre}
-                onValueChange={(value) => setGenre(value)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Selecciona un género" value="" />
-                {GENRES.map((g) => (
-                  <Picker.Item key={g} label={g} value={g} />
-                ))}
-              </Picker>
-            </View>
-          )}
-
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Sinopsis"
-            value={synopsis}
-            onChangeText={setSynopsis}
-            multiline
-            numberOfLines={4}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="URL de la imagen de portada (opcional)"
-            value={coverUrl}
-            onChangeText={setCoverUrl}
-          />
-
-          <TouchableOpacity style={styles.button} onPress={handleCreateBook}>
-            <Text style={styles.buttonText}>Crear Libro</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    );
-  }
-
-  // Vista del editor de capítulos
+  // Si está en modo editor
   if (editorMode) {
     return (
       <View style={styles.editorContainer}>
@@ -928,12 +832,10 @@ export default function WriteScreen({ navigation }) {
           <TouchableOpacity onPress={() => setEditorMode(false)}>
             <Text style={styles.backButton}>← Volver</Text>
           </TouchableOpacity>
-          <Text style={styles.editorTitle}>
-            {currentChapter ? "Editar Capítulo" : "Nuevo Capítulo"}
-          </Text>
+          <Text style={styles.editorTitle}>{bookTitle}</Text>
           <TouchableOpacity onPress={handleSaveChapter} disabled={loading}>
             {loading ? (
-              <ActivityIndicator size="small" color="#B87D5F" />
+              <ActivityIndicator color="#B87D5F" />
             ) : (
               <Text style={styles.saveButton}>Guardar</Text>
             )}
@@ -950,7 +852,6 @@ export default function WriteScreen({ navigation }) {
         </View>
 
         <SimpleTextEditor
-          key={currentChapter?.id || "new"} // ⭐ ESTA ES LA LÍNEA NUEVA
           initialContent={chapterContent}
           onContentChange={setChapterContent}
           placeholder="Escribe tu capítulo aquí..."
@@ -959,41 +860,386 @@ export default function WriteScreen({ navigation }) {
     );
   }
 
-  // Vista principal con lista de capítulos
+  // Si se está creando un nuevo libro
+  if (showBookForm) {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.headerTitleRow}>
+            <Text style={styles.headerTitle}>Nuevo Libro</Text>
+            <TouchableOpacity onPress={() => setShowBookForm(false)}>
+              <Text style={styles.backButton}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>Crear Nuevo Libro</Text>
+          <Text style={styles.formSubtitle}>
+            Completa la información de tu libro
+          </Text>
+
+          <Text style={styles.label}>Título *</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Título del libro"
+            value={bookTitle}
+            onChangeText={setBookTitle}
+          />
+
+          <Text style={styles.label}>Género *</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={genre}
+              onValueChange={(value) => setGenre(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecciona un género" value="" />
+              {GENRES.map((g) => (
+                <Picker.Item key={g} label={g} value={g} />
+              ))}
+            </Picker>
+          </View>
+
+          <Text style={styles.label}>Sinopsis *</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Describe tu libro"
+            value={synopsis}
+            onChangeText={setSynopsis}
+            multiline
+            numberOfLines={4}
+          />
+
+          <Text style={styles.label}>URL de la portada (opcional)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="https://..."
+            value={coverUrl}
+            onChangeText={setCoverUrl}
+          />
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleCreateBook}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Crear Libro</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    );
+  }
+
+  // Si se está mostrando el selector de libros
+  if (showBookSelector) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Mis Libros</Text>
+          <Text style={styles.headerSubtitle}>
+            {myBooks.length} {myBooks.length === 1 ? "libro" : "libros"}
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Selecciona un libro</Text>
+
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="#B87D5F"
+              style={styles.loader}
+            />
+          ) : myBooks.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>
+                No tienes libros creados
+              </Text>
+              <Text style={styles.emptyStateSubtext}>
+                Crea tu primer libro para comenzar a escribir
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={myBooks}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.bookItem}
+                  onPress={() => selectExistingBook(item)}
+                >
+                  <View style={styles.bookItemHeader}>
+                    <Text style={styles.bookItemTitle}>{item.title}</Text>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        {
+                          backgroundColor:
+                            item.status === "published"
+                              ? "#4CAF50"
+                              : item.status === "submitted"
+                              ? "#FF9800"
+                              : "#999",
+                        },
+                      ]}
+                    >
+                      <Text style={styles.statusText}>
+                        {item.status === "published"
+                          ? "Publicado"
+                          : item.status === "submitted"
+                          ? "Enviado"
+                          : "Borrador"}
+                      </Text>
+                    </View>
+                  </View>
+                  <Text style={styles.bookItemGenre}>{item.genre}</Text>
+                  <Text style={styles.bookItemSynopsis} numberOfLines={2}>
+                    {item.synopsis}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setShowBookForm(true);
+              setShowBookSelector(false);
+              setBookTitle("");
+              setGenre("");
+              setSynopsis("");
+              setCoverUrl("");
+            }}
+          >
+            <Text style={styles.buttonText}>+ Crear Nuevo Libro</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  // Vista principal: libro seleccionado con lista de capítulos
+  const renderChapterItem = ({ item, index }) => (
+    <View style={styles.chapterItem}>
+      <View style={styles.chapterItemHeader}>
+        <Text style={styles.chapterNumber}>Capítulo {index + 1}</Text>
+        <Text style={styles.chapterDate}>
+          {new Date(item.created_at).toLocaleDateString()}
+        </Text>
+      </View>
+      <Text style={styles.chapterItemTitle}>{item.title}</Text>
+
+      <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
+        <TouchableOpacity
+          style={[styles.button, { flex: 1 }]}
+          onPress={() => handleEditChapter(item)}
+        >
+          <Text style={styles.buttonText}>Editar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.cancelButton, { flex: 1 }]}
+          onPress={() => handleDeleteChapter(item.id)}
+        >
+          <Text style={[styles.buttonText, styles.cancelButtonText]}>
+            Eliminar
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case "published":
+        return "#4CAF50";
+      case "submitted":
+        return "#FF9800";
+      default:
+        return "#999";
+    }
+  };
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "published":
+        return "Publicado ✓";
+      case "submitted":
+        return "Enviado";
+      default:
+        return "Borrador";
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity onPress={() => setShowBookSelector(true)}>
+            <Text style={styles.backButton}>← Cambiar libro</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.headerTitleRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.headerTitle}>{bookTitle}</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 8,
+              }}
+            >
+              <View
+                style={[
+                  styles.statusBadge,
+                  { backgroundColor: getStatusBadgeColor(bookStatus) },
+                ]}
+              >
+                <Text style={styles.statusText}>
+                  {getStatusLabel(bookStatus)}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setShowEditModal(true)}
+          >
+            <Text style={styles.editButtonText}>Editar Info</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.headerSubtitle}>
+          {chapters.length} {chapters.length === 1 ? "capítulo" : "capítulos"}
+        </Text>
+      </View>
+
+      {/* Banner de debug */}
       {publishDebugMessage && (
         <View
-          style={[
-            styles.debugBanner,
-            publishDebugMessage.startsWith("Error") && styles.debugBannerError,
-            publishDebugMessage.startsWith("Libro publicado") &&
-              styles.debugBannerSuccess,
-            publishDebugMessage.startsWith("Procesando") &&
-              styles.debugBannerWarning,
-          ]}
+          style={{
+            backgroundColor: "#FFF9C4",
+            padding: 12,
+            borderBottomWidth: 1,
+            borderBottomColor: "#FDD835",
+          }}
         >
-          <Text style={styles.debugBannerText}>{publishDebugMessage}</Text>
+          <Text style={{ color: "#F57F17", textAlign: "center", fontSize: 13 }}>
+            {publishDebugMessage}
+          </Text>
         </View>
       )}
-      {renderTitleModal()}
 
-      {/* Modal de edición de libro */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#B87D5F" style={styles.loader} />
+      ) : (
+        <ScrollView style={styles.chapterListContainer}>
+          {chapters.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>No hay capítulos aún</Text>
+              <Text style={styles.emptyStateSubtext}>
+                Comienza a escribir tu historia
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={chapters}
+              renderItem={renderChapterItem}
+              keyExtractor={(item) => item.id.toString()}
+              scrollEnabled={false}
+            />
+          )}
+
+          {/* Sección de publicación */}
+          {bookStatus === "draft" && chapters.length > 0 && (
+            <View style={styles.publishSection}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#4CAF50" }]}
+                onPress={handlePublishBook}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>📚 Publicar Libro</Text>
+                )}
+              </TouchableOpacity>
+              <Text style={styles.publishInfo}>
+                Al publicar, tu libro será visible en la biblioteca pública para
+                todos los lectores.
+              </Text>
+            </View>
+          )}
+
+          {bookStatus === "published" && (
+            <View style={styles.publishSection}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#2196F3" }]}
+                onPress={handlePublishBook}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    🔄 Actualizar Publicación
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  styles.unpublishButton,
+                  { marginTop: 10 },
+                ]}
+                onPress={handleUnpublishBook}
+                disabled={loading}
+              >
+                <Text style={[styles.buttonText, { color: "#F44336" }]}>
+                  🔓 Desbloquear para Editar
+                </Text>
+              </TouchableOpacity>
+
+              <Text style={styles.publishInfo}>
+                Tu libro está publicado. Puedes actualizar la información o
+                desbloquearlo para editar capítulos.
+              </Text>
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={[styles.button, { marginTop: 15 }]}
+            onPress={handleNewChapter}
+          >
+            <Text style={styles.buttonText}>+ Nuevo Capítulo</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
+
+      {/* Modal para editar información del libro */}
       <Modal
-        animationType="slide"
         visible={showEditModal}
+        animationType="slide"
         onRequestClose={() => setShowEditModal(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Editar Libro</Text>
             <TouchableOpacity onPress={() => setShowEditModal(false)}>
               <Text style={styles.modalCloseButton}>✕</Text>
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Editar Libro</Text>
-            <View style={{ width: 30 }} />
           </View>
 
           <ScrollView style={styles.formContainer}>
+            <Text style={styles.label}>Título *</Text>
             <TextInput
               style={styles.input}
               placeholder="Título del libro"
@@ -1001,55 +1247,34 @@ export default function WriteScreen({ navigation }) {
               onChangeText={setBookTitle}
             />
 
-            <Text style={styles.label}>Género</Text>
-            {Platform.OS === "web" ? (
-              <select
-                value={genre}
-                onChange={(e) => setGenre(e.target.value)}
-                style={{
-                  backgroundColor: "#fff",
-                  padding: 15,
-                  borderRadius: 10,
-                  marginBottom: 15,
-                  fontSize: 16,
-                  borderWidth: 1,
-                  borderColor: "#e0e0e0",
-                }}
+            <Text style={styles.label}>Género *</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={genre}
+                onValueChange={(value) => setGenre(value)}
+                style={styles.picker}
               >
-                <option value="">Selecciona un género</option>
+                <Picker.Item label="Selecciona un género" value="" />
                 {GENRES.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
+                  <Picker.Item key={g} label={g} value={g} />
                 ))}
-              </select>
-            ) : (
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={genre}
-                  onValueChange={(value) => setGenre(value)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Selecciona un género" value="" />
-                  {GENRES.map((g) => (
-                    <Picker.Item key={g} label={g} value={g} />
-                  ))}
-                </Picker>
-              </View>
-            )}
+              </Picker>
+            </View>
 
+            <Text style={styles.label}>Sinopsis *</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Sinopsis"
+              placeholder="Describe tu libro"
               value={synopsis}
               onChangeText={setSynopsis}
               multiline
               numberOfLines={4}
             />
 
+            <Text style={styles.label}>URL de la portada (opcional)</Text>
             <TextInput
               style={styles.input}
-              placeholder="URL de la imagen de portada"
+              placeholder="https://..."
               value={coverUrl}
               onChangeText={setCoverUrl}
             />
@@ -1069,141 +1294,11 @@ export default function WriteScreen({ navigation }) {
         </View>
       </Modal>
 
-      <ScrollView>
-        <View style={styles.header}>
-          <View style={styles.headerTitleRow}>
-            <View style={styles.backButtonContainer}>
-              <TouchableOpacity onPress={resetForm}>
-                <Text style={styles.backButton}>← Volver</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.headerTitle}>{bookTitle}</Text>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={openEditBookModal}
-            >
-              <Text style={styles.editButtonText}>Editar</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.headerSubtitle}>{genre}</Text>
+      {/* Modal para título del capítulo */}
+      <ModalTituloCapitulo />
 
-          {/* NUEVO: Indicador de estado de publicación */}
-          <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(bookStatus), marginTop: 10 },
-            ]}
-          >
-            <Text style={styles.statusText}>{getStatusLabel(bookStatus)}</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Capítulos ({chapters.length})</Text>
-
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#B87D5F"
-              style={styles.loader}
-            />
-          ) : chapters.length > 0 ? (
-            chapters.map((chapter) => (
-              <View key={chapter.id} style={styles.chapterItem}>
-                <View style={styles.chapterItemHeader}>
-                  <View>
-                    <Text style={styles.chapterNumber}>
-                      Capítulo {chapter.chapter_number}
-                    </Text>
-                    <Text style={styles.chapterItemTitle}>{chapter.title}</Text>
-                  </View>
-                  <Text style={styles.chapterDate}>
-                    {new Date(chapter.created_at).toLocaleDateString()}
-                  </Text>
-                </View>
-
-                <View style={styles.actionBar}>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleEditChapter(chapter)}
-                  >
-                    <Text style={styles.actionButtonText}>Editar</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[
-                      styles.actionButton,
-                      { backgroundColor: "#F44336" },
-                    ]}
-                    onPress={() => handleDeleteChapter(chapter)}
-                  >
-                    <Text style={styles.actionButtonText}>Eliminar</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                No hay capítulos todavía
-              </Text>
-              <Text style={styles.emptyStateSubtext}>
-                Crea tu primer capítulo para comenzar
-              </Text>
-            </View>
-          )}
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => setShowTitleModal(true)}
-          >
-            <Text style={styles.buttonText}>+ Nuevo Capítulo</Text>
-          </TouchableOpacity>
-
-          {/* NUEVO: Botón de publicar/actualizar */}
-          {chapters.length > 0 && (
-            <View style={styles.publishSection}>
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  styles.submitActionButton,
-                  bookStatus === "published" && styles.updateButton,
-                ]}
-                onPress={handlePublishBook}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.buttonText}>
-                    {bookStatus === "published"
-                      ? "✓ Actualizar Publicación"
-                      : "📤 Publicar Libro"}
-                  </Text>
-                )}
-              </TouchableOpacity>
-
-              {/* Botón de despublicar si está publicado */}
-              {bookStatus === "published" && (
-                <TouchableOpacity
-                  style={[styles.button, styles.unpublishButton]}
-                  onPress={handleUnpublishBook}
-                  disabled={loading}
-                >
-                  <Text style={[styles.buttonText, { color: "#F44336" }]}>
-                    Despublicar
-                  </Text>
-                </TouchableOpacity>
-              )}
-
-              <Text style={styles.publishInfo}>
-                {bookStatus === "published"
-                  ? "Tu libro es visible en la sección Explorar. Puedes editar capítulos y actualizar la publicación."
-                  : "Publica tu libro para que sea visible en la sección Explorar para todos los lectores."}
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      {/* NUEVO: Modal de confirmación de publicación para web */}
+      <PublishConfirmModal />
     </View>
   );
 }
@@ -1213,87 +1308,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
-  debugBanner: {
-    backgroundColor: "#333",
-    padding: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#222",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  debugBannerSuccess: {
-    backgroundColor: "#4CAF50",
-  },
-  debugBannerError: {
-    backgroundColor: "#F44336",
-  },
-  debugBannerWarning: {
-    backgroundColor: "#FF9800",
-  },
-  debugBannerText: {
-    color: "#fff",
-    fontSize: 15,
-    textAlign: "center",
-    fontWeight: "500",
-    letterSpacing: 0.3,
-  },
-  loadingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loadingText: {
-    marginLeft: 8,
-    color: "#fff",
-  },
-  disabledButton: {
-    opacity: 0.7,
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 24,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: "90%",
-    maxWidth: 500,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  errorText: {
-    color: "#ff3b30",
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
-  },
   header: {
     padding: 20,
     paddingTop: 50,
     backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
-    flex: 1,
+    color: "#333",
+    fontFamily: "serif",
   },
   headerTitleRow: {
     flexDirection: "row",
@@ -1515,34 +1541,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 8,
   },
-  actionBar: {
-    flexDirection: "row",
-    padding: 15,
-    gap: 10,
-  },
-  actionButton: {
-    flex: 1,
-    backgroundColor: "#B87D5F",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  submitActionButton: {
-    backgroundColor: "#4CAF50",
-  },
-  updateButton: {
-    backgroundColor: "#2196F3",
-  },
-  unpublishButton: {
-    backgroundColor: "#fff",
-    borderWidth: 2,
-    borderColor: "#F44336",
-  },
-  actionButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
   chapterListContainer: {
     flex: 1,
     padding: 20,
@@ -1599,7 +1597,11 @@ const styles = StyleSheet.create({
     color: "#999",
     fontWeight: "300",
   },
-  // NUEVOS ESTILOS para la sección de publicación
+  modalButtons: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
+  },
   publishSection: {
     marginTop: 20,
     padding: 15,
@@ -1614,5 +1616,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     lineHeight: 18,
+  },
+  unpublishButton: {
+    backgroundColor: "#fff",
+    borderWidth: 2,
+    borderColor: "#F44336",
   },
 });

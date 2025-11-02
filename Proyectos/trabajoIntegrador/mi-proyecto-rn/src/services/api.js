@@ -19,7 +19,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000, // 10 segundos de timeout
+  timeout: 10000,
 });
 
 // Interceptor para agregar token y logging
@@ -32,7 +32,7 @@ api.interceptors.request.use(
       const token = await getToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log("🔑 Token added to request");
+        console.log("🔒 Token added to request");
       } else {
         console.log("⚠️ No token available");
       }
@@ -61,19 +61,15 @@ api.interceptors.response.use(
   },
   async (error) => {
     if (error.response) {
-      // El servidor respondió con un código de estado fuera del rango 2xx
       console.error("❌ API Error Response:");
       console.error("   Status:", error.response.status);
       console.error("   Data:", error.response.data);
       console.error("   URL:", error.config?.url);
 
-      // Si el token expiró o es inválido
       if (error.response.status === 401) {
         console.log("🔒 Unauthorized - Token might be invalid");
-        // Aquí podrías limpiar el token y redirigir al login
       }
     } else if (error.request) {
-      // La petición se hizo pero no se recibió respuesta
       console.error("❌ API No Response:");
       console.error("   Request:", error.request);
       console.error("   Message:", error.message);
@@ -81,7 +77,6 @@ api.interceptors.response.use(
       error.message =
         "No se pudo conectar con el servidor. Verifica tu conexión y que el servidor esté corriendo.";
     } else {
-      // Algo pasó al configurar la petición
       console.error("❌ API Error:", error.message);
     }
 
@@ -112,7 +107,6 @@ export const booksAPI = {
     return api.get("/books");
   },
 
-  // NUEVO - Obtener solo libros publicados
   getPublished: () => {
     console.log("🔵 booksAPI.getPublished called");
     return api.get("/books/published");
@@ -122,31 +116,36 @@ export const booksAPI = {
     console.log("🔵 booksAPI.getById called with id:", id);
     return api.get(`/books/${id}`);
   },
+
   getMyBooks: () => {
     console.log("🔵 booksAPI.getMyBooks called");
     return api.get("/books/my-books");
   },
+
   create: (data) => {
     console.log("🔵 booksAPI.create called");
     return api.post("/books", data);
   },
+
   update: (id, data) => {
     console.log("🔵 booksAPI.update called with id:", id);
     return api.put(`/books/${id}`, data);
   },
+
   delete: (id) => {
     console.log("🔵 booksAPI.delete called with id:", id);
     return api.delete(`/books/${id}`);
   },
+
   submit: (id) => {
     console.log("🔵 booksAPI.submit called with id:", id);
     return api.post(`/books/${id}/submit`);
   },
+
   publish: async (id) => {
     console.log("🔵 booksAPI.publish called with id:", id);
     try {
       const response = await api.post(`/books/${id}/publish`);
-      // Si el backend responde con { success: false } consideramos que fue un fallo
       if (response.data && response.data.success === false) {
         console.error(
           "❌ booksAPI.publish - backend responded with success:false",
@@ -168,15 +167,26 @@ export const booksAPI = {
     }
   },
 
-  // NUEVO - Descargar libro como PDF
   downloadPDF: (id) => {
     console.log("🔵 booksAPI.downloadPDF called with id:", id);
     return api.get(`/books/${id}/download-pdf`);
   },
+
+  // NUEVO - Registrar visualización de un libro
+  registerView: (id) => {
+    console.log("🔵 booksAPI.registerView called with id:", id);
+    return api.post(`/books/${id}/view`);
+  },
+
+  // NUEVO - Obtener estadísticas de visualizaciones
+  getViewStats: (id) => {
+    console.log("🔵 booksAPI.getViewStats called with id:", id);
+    return api.get(`/books/${id}/views`);
+  },
 };
 
 const MAX_RETRIES = 2;
-const RETRY_DELAY = 1000; // 1 segundo
+const RETRY_DELAY = 1000;
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -225,9 +235,8 @@ export const chaptersAPI = {
   },
 };
 
-// ==================== INTERACTIONS API (NUEVO) ====================
+// ==================== INTERACTIONS API ====================
 export const interactionsAPI = {
-  // Obtener interacciones del usuario para un libro
   getUserInteractions: (bookId) => {
     console.log(
       "🔵 interactionsAPI.getUserInteractions called with bookId:",
@@ -236,7 +245,6 @@ export const interactionsAPI = {
     return api.get(`/interactions/book/${bookId}`);
   },
 
-  // LIKES
   addLike: (bookId) => {
     console.log("🔵 interactionsAPI.addLike called with bookId:", bookId);
     return api.post(`/interactions/like`, { book_id: bookId });
@@ -247,7 +255,6 @@ export const interactionsAPI = {
     return api.delete(`/interactions/like/${bookId}`);
   },
 
-  // DISLIKES
   addDislike: (bookId) => {
     console.log("🔵 interactionsAPI.addDislike called with bookId:", bookId);
     return api.post(`/interactions/dislike`, { book_id: bookId });
@@ -258,7 +265,6 @@ export const interactionsAPI = {
     return api.delete(`/interactions/dislike/${bookId}`);
   },
 
-  // MARK AS READ
   markAsRead: (bookId) => {
     console.log("🔵 interactionsAPI.markAsRead called with bookId:", bookId);
     return api.post(`/interactions/read`, { book_id: bookId });
@@ -269,22 +275,19 @@ export const interactionsAPI = {
     return api.delete(`/interactions/read/${bookId}`);
   },
 
-  // Obtener estadísticas de un libro
   getBookStats: (bookId) => {
     console.log("🔵 interactionsAPI.getBookStats called with bookId:", bookId);
     return api.get(`/interactions/stats/${bookId}`);
   },
 };
 
-// ==================== COMMENTS API (NUEVO) ====================
+// ==================== COMMENTS API ====================
 export const commentsAPI = {
-  // Obtener comentarios de un libro
   getBookComments: (bookId) => {
     console.log("🔵 commentsAPI.getBookComments called with bookId:", bookId);
     return api.get(`/comments/book/${bookId}`);
   },
 
-  // Obtener comentarios de un capítulo
   getChapterComments: (chapterId) => {
     console.log(
       "🔵 commentsAPI.getChapterComments called with chapterId:",
@@ -293,31 +296,26 @@ export const commentsAPI = {
     return api.get(`/comments/chapter/${chapterId}`);
   },
 
-  // Crear un comentario
   create: (commentData) => {
     console.log("🔵 commentsAPI.create called");
     return api.post(`/comments`, commentData);
   },
 
-  // Actualizar un comentario
   update: (id, commentData) => {
     console.log("🔵 commentsAPI.update called with id:", id);
     return api.put(`/comments/${id}`, commentData);
   },
 
-  // Eliminar un comentario
   delete: (id) => {
     console.log("🔵 commentsAPI.delete called with id:", id);
     return api.delete(`/comments/${id}`);
   },
 
-  // Responder a un comentario
   reply: (commentId, replyData) => {
     console.log("🔵 commentsAPI.reply called with commentId:", commentId);
     return api.post(`/comments/${commentId}/reply`, replyData);
   },
 
-  // Obtener respuestas de un comentario
   getReplies: (commentId) => {
     console.log("🔵 commentsAPI.getReplies called with commentId:", commentId);
     return api.get(`/comments/${commentId}/replies`);

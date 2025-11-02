@@ -1,6 +1,6 @@
 const db = require("../config/database");
 
-// NUEVA FUNCIÓN - Obtener capítulos por ID de libro
+// Obtener capítulos por ID de libro
 exports.getChaptersByBookId = async (req, res) => {
   try {
     const { bookId } = req.params;
@@ -35,7 +35,12 @@ exports.createChapter = async (req, res) => {
     const { book_id, chapter_number, title, content } = req.body;
 
     console.log("📝 Creando capítulo para libro:", book_id);
-    console.log("Contenido recibido - longitud:", content?.length);
+    console.log("Datos recibidos:", {
+      book_id,
+      chapter_number,
+      title,
+      content_length: content?.length,
+    });
 
     // Validaciones básicas
     if (!book_id || !title || !content) {
@@ -67,9 +72,34 @@ exports.createChapter = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
+    // ✅ FIX: Calcular automáticamente el chapter_number si no se proporciona
+    let finalChapterNumber = chapter_number;
+
+    if (!finalChapterNumber) {
+      console.log(
+        "📊 chapter_number no proporcionado, calculando automáticamente..."
+      );
+
+      // Obtener el número más alto de capítulo existente
+      const [maxChapter] = await db.query(
+        "SELECT MAX(chapter_number) as max_number FROM chapters WHERE book_id = ?",
+        [book_id]
+      );
+
+      // El nuevo capítulo será el siguiente número
+      finalChapterNumber = (maxChapter[0].max_number || 0) + 1;
+
+      console.log("✅ chapter_number calculado:", finalChapterNumber);
+    }
+
+    console.log(
+      "💾 Insertando capítulo con chapter_number:",
+      finalChapterNumber
+    );
+
     const [result] = await db.query(
       "INSERT INTO chapters (book_id, chapter_number, title, content) VALUES (?, ?, ?, ?)",
-      [book_id, chapter_number, title, content]
+      [book_id, finalChapterNumber, title, content]
     );
 
     console.log("✅ Capítulo creado con ID:", result.insertId);
@@ -80,7 +110,7 @@ exports.createChapter = async (req, res) => {
       chapter: {
         id: result.insertId,
         book_id,
-        chapter_number,
+        chapter_number: finalChapterNumber,
         title,
         content: content.substring(0, 100) + "...",
       },
@@ -139,6 +169,8 @@ exports.deleteChapter = async (req, res) => {
   try {
     const chapterId = req.params.id;
 
+    console.log("🗑️ Eliminando capítulo:", chapterId);
+
     const [chapters] = await db.query(
       `
       SELECT c.*, b.writer_id 
@@ -158,8 +190,13 @@ exports.deleteChapter = async (req, res) => {
     }
 
     await db.query("DELETE FROM chapters WHERE id = ?", [chapterId]);
+
+    console.log("✅ Capítulo eliminado");
     res.json({ message: "Chapter deleted successfully" });
   } catch (error) {
+    console.error("❌ Error eliminando capítulo:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+module.exports = exports;

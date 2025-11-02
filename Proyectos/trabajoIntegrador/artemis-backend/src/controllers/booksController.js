@@ -15,7 +15,7 @@ exports.getAllBooks = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN - Obtener solo libros publicados con estadísticas
+// Obtener solo libros publicados con estadísticas
 exports.getPublishedBooks = async (req, res) => {
   try {
     console.log("📚 Obteniendo libros publicados con estadísticas");
@@ -27,7 +27,8 @@ exports.getPublishedBooks = async (req, res) => {
         u.profile_image_url as writer_profile_image,
         (SELECT COUNT(*) FROM likes WHERE book_id = b.id) as like_count,
         (SELECT COUNT(*) FROM dislikes WHERE book_id = b.id) as dislike_count,
-        (SELECT COUNT(*) FROM comments WHERE book_id = b.id) as comment_count
+        (SELECT COUNT(*) FROM comments WHERE book_id = b.id) as comment_count,
+        (SELECT COUNT(DISTINCT user_id) FROM book_views WHERE book_id = b.id) as view_count
       FROM books b 
       JOIN users u ON b.writer_id = u.id 
       WHERE b.status = 'published'
@@ -66,8 +67,13 @@ exports.getMyBooks = async (req, res) => {
   }
 };
 
+// ACTUALIZADO - Obtener libro por ID con visualizaciones y capítulos
 exports.getBookById = async (req, res) => {
   try {
+    const bookId = req.params.id;
+    console.log("📖 Obteniendo libro con ID:", bookId);
+
+    // Obtener información del libro con estadísticas
     const [books] = await db.query(
       `
       SELECT 
@@ -75,29 +81,132 @@ exports.getBookById = async (req, res) => {
         u.username as writer_name,
         u.profile_image_url as writer_profile_image,
         (SELECT COUNT(*) FROM likes WHERE book_id = b.id) as like_count,
-        (SELECT COUNT(*) FROM dislikes WHERE book_id = b.id) as dislike_count
+        (SELECT COUNT(*) FROM dislikes WHERE book_id = b.id) as dislike_count,
+        (SELECT COUNT(DISTINCT user_id) FROM book_views WHERE book_id = b.id) as view_count,
+        (SELECT COUNT(*) FROM comments WHERE book_id = b.id) as comment_count
       FROM books b 
       JOIN users u ON b.writer_id = u.id 
       WHERE b.id = ?
     `,
-      [req.params.id]
+      [bookId]
     );
 
     if (books.length === 0) {
       return res.status(404).json({ message: "Book not found" });
     }
 
+    const book = books[0];
+
     // Si el libro es de tipo in_app, obtener capítulos
-    if (books[0].type === "in_app") {
+    if (book.type === "in_app") {
       const [chapters] = await db.query(
-        "SELECT * FROM chapters WHERE book_id = ? ORDER BY chapter_number",
-        [req.params.id]
+        `SELECT 
+          id,
+          chapter_number,
+          title,
+          content,
+          created_at,
+          updated_at
+        FROM chapters 
+        WHERE book_id = ? 
+        ORDER BY chapter_number ASC`,
+        [bookId]
       );
-      books[0].chapters = chapters;
+      book.chapters = chapters;
+      console.log("📑 Capítulos encontrados:", chapters.length);
     }
 
-    res.json(books[0]);
+    console.log("✅ Libro obtenido exitosamente");
+    res.json(book);
   } catch (error) {
+    console.error("❌ Error en getBookById:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// NUEVA FUNCIÓN - Registrar visualización de un libro
+exports.registerView = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const userId = req.user.id;
+
+    console.log(
+      "👁️ Registrando visualización - Libro:",
+      bookId,
+      "Usuario:",
+      userId
+    );
+
+    // Verificar que el libro existe y está publicado
+    const [books] = await db.query(
+      "SELECT id, status FROM books WHERE id = ? AND status = 'published'",
+      [bookId]
+    );
+
+    if (books.length === 0) {
+      return res.status(404).json({
+        message: "Book not found or not published",
+      });
+    }
+
+    // Insertar o actualizar la visualización (INSERT IGNORE no genera error si ya existe)
+    await db.query(
+      `INSERT INTO book_views (book_id, user_id, viewed_at) 
+       VALUES (?, ?, NOW()) 
+       ON DUPLICATE KEY UPDATE viewed_at = NOW()`,
+      [bookId, userId]
+    );
+
+    // Obtener el contador actualizado
+    const [viewCount] = await db.query(
+      "SELECT COUNT(DISTINCT user_id) as count FROM book_views WHERE book_id = ?",
+      [bookId]
+    );
+
+    console.log(
+      "✅ Visualización registrada. Total de vistas únicas:",
+      viewCount[0].count
+    );
+
+    res.json({
+      success: true,
+      message: "View registered successfully",
+      view_count: viewCount[0].count,
+    });
+  } catch (error) {
+    console.error("❌ Error en registerView:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// NUEVA FUNCIÓN - Obtener estadísticas de visualizaciones de un libro
+exports.getBookViewStats = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+
+    console.log(
+      "📊 Obteniendo estadísticas de visualizaciones del libro:",
+      bookId
+    );
+
+    const [stats] = await db.query(
+      `SELECT 
+        COUNT(DISTINCT user_id) as unique_views,
+        COUNT(*) as total_views,
+        MAX(viewed_at) as last_view
+      FROM book_views 
+      WHERE book_id = ?`,
+      [bookId]
+    );
+
+    console.log("✅ Estadísticas obtenidas:", stats[0]);
+
+    res.json({
+      success: true,
+      data: stats[0],
+    });
+  } catch (error) {
+    console.error("❌ Error en getBookViewStats:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -172,7 +281,6 @@ exports.updateBook = async (req, res) => {
       updates.push("cover_image_url = ?");
       values.push(cover_image_url);
     }
-    // Permitir cambiar el status (para despublicar)
     if (status !== undefined) {
       updates.push("status = ?");
       values.push(status);
@@ -243,7 +351,6 @@ exports.publishBook = async (req, res) => {
     console.log("📚 Iniciando proceso de publicación...");
     const bookId = req.params.id;
 
-    // Verificar que el libro existe
     const [books] = await db.query(`SELECT * FROM books WHERE id = ?`, [
       bookId,
     ]);
@@ -257,7 +364,6 @@ exports.publishBook = async (req, res) => {
 
     const book = books[0];
 
-    // Permitir que el escritor publique su propio libro
     if (book.writer_id !== req.user.id && req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -265,7 +371,6 @@ exports.publishBook = async (req, res) => {
       });
     }
 
-    // Verificar que el libro tenga la información necesaria
     if (!book.title || !book.genre || !book.synopsis) {
       return res.status(400).json({
         success: false,
@@ -279,7 +384,6 @@ exports.publishBook = async (req, res) => {
       });
     }
 
-    // Verificar que tenga al menos un capítulo
     const [chapters] = await db.query(
       "SELECT id, title, content FROM chapters WHERE book_id = ?",
       [bookId]
@@ -292,7 +396,6 @@ exports.publishBook = async (req, res) => {
       });
     }
 
-    // Verificar que todos los capítulos tengan contenido
     const chaptersWithoutContent = chapters.filter(
       (chapter) => !chapter.content || chapter.content.trim().length === 0
     );
@@ -308,7 +411,6 @@ exports.publishBook = async (req, res) => {
       });
     }
 
-    // Todo está bien, publicar el libro
     await db.query(
       "UPDATE books SET status = ?, published_at = NOW() WHERE id = ?",
       ["published", bookId]
@@ -330,12 +432,10 @@ exports.publishBook = async (req, res) => {
   }
 };
 
-// NUEVA FUNCIÓN - Descargar libro como PDF
 exports.downloadPDF = async (req, res) => {
   try {
     const bookId = req.params.id;
 
-    // Obtener el libro con todos sus capítulos
     const [books] = await db.query(
       `SELECT b.*, u.username as writer_name 
        FROM books b 
@@ -350,14 +450,11 @@ exports.downloadPDF = async (req, res) => {
 
     const book = books[0];
 
-    // Obtener capítulos
     const [chapters] = await db.query(
       "SELECT * FROM chapters WHERE book_id = ? ORDER BY chapter_number",
       [bookId]
     );
 
-    // Aquí deberías usar una librería como pdfkit para generar el PDF
-    // Por ahora, retornamos los datos
     res.json({
       message: "PDF generation would happen here",
       book,

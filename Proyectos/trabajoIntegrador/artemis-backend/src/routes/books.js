@@ -11,6 +11,12 @@ router.get("/published", booksController.getPublishedBooks);
 // Obtener libros del usuario autenticado
 router.get("/my-books", authMiddleware, booksController.getMyBooks);
 
+// NUEVA RUTA - Registrar visualización de un libro
+router.post("/:id/view", authMiddleware, booksController.registerView);
+
+// NUEVA RUTA - Obtener estadísticas de visualizaciones
+router.get("/:id/views", booksController.getBookViewStats);
+
 // Descargar libro como PDF
 router.get("/:id/download-pdf", authMiddleware, booksController.downloadPDF);
 
@@ -50,7 +56,7 @@ router.post(
   booksController.submitBook
 );
 
-// Publicar libro (ahora también lo pueden hacer los escritores)
+// Publicar libro
 router.post(
   "/:id/publish",
   authMiddleware,
