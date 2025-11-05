@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Artemis",
+    "slug": "artemis-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tuempresa.artemis"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.tuempresa.artemis",
+      "permissions": ["INTERNET"]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-web-browser"],
+    "extra": {
+      "googleWebClientId": "161972850103-bajv1grgis1q415db65tdi430ppdok6g.apps.googleusercontent.com",
+      "googleAndroidClientId": "161972850103-4ciqp0ktntkuh4a57po5eorj36re8dol.apps.googleusercontent.com",
+      "eas": {
+        "projectId": "8b22e3bb-55e4-4cbd-b9d3-f3afa5b2d008"
+      }
+    },
+    "scheme": "artemis"
+  }
+}
