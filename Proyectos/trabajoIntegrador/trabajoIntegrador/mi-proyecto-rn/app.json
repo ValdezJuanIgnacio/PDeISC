@@ -14,23 +14,26 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tuempresa.artemis"
+      "bundleIdentifier": "com.tuempresa.artemis",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "edgeToEdgeEnabled": true,
       "package": "com.tuempresa.artemis",
-      "permissions": ["INTERNET"]
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": ["expo-web-browser"],
     "extra": {
-      "googleWebClientId": "161972850103-bajv1grgis1q415db65tdi430ppdok6g.apps.googleusercontent.com",
-      "googleAndroidClientId": "161972850103-4ciqp0ktntkuh4a57po5eorj36re8dol.apps.googleusercontent.com",
+      "googleWebClientId": "148633198885-qevaacb5brgmrg770n0mgfs4f580okp0.apps.googleusercontent.com",
+      "googleIosClientId": "TU_IOS_CLIENT_ID.apps.googleusercontent.com",
+      "googleAndroidClientId": "TU_ANDROID_CLIENT_ID.apps.googleusercontent.com",
       "eas": {
         "projectId": "8b22e3bb-55e4-4cbd-b9d3-f3afa5b2d008"
       }

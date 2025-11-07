@@ -378,9 +378,7 @@ export default function ProfileScreen({ navigation }) {
 
             {/* Badge de bibliotecario si aplica */}
             {user?.is_librarian && (
-              <View
-                style={[styles.roleBadge, { backgroundColor: "#4CAF50" }]}
-              >
+              <View style={[styles.roleBadge, { backgroundColor: "#4CAF50" }]}>
                 <Text style={styles.roleText}>📚 Bibliotecario</Text>
               </View>
             )}
@@ -623,9 +621,7 @@ export default function ProfileScreen({ navigation }) {
               style={styles.imagePickerOption}
               onPress={takePhoto}
             >
-              <Text style={styles.imagePickerOptionText}>
-                📷 Tomar Foto
-              </Text>
+              <Text style={styles.imagePickerOptionText}>📷 Tomar Foto</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

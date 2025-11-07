@@ -18,11 +18,19 @@ WebBrowser.maybeCompleteAuthSession();
 export const useGoogleAuth = () => {
   const [loading, setLoading] = useState(false);
 
+  // ⚠️ CRÍTICO: Especificar redirectUri explícitamente
+  // Esto forzará el uso de localhost en lugar de exp.direct
+  const redirectUri =
+    Platform.OS === "web" ? "http://localhost:8081" : "artemis://redirect";
+
+  console.log("🔑 Redirect URI configurado:", redirectUri);
+
   // Configuración para web (usando expo-auth-session)
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: Constants.expoConfig?.extra?.googleWebClientId,
     iosClientId: Constants.expoConfig?.extra?.googleIosClientId,
     androidClientId: Constants.expoConfig?.extra?.googleAndroidClientId,
+    redirectUri: redirectUri, // 👈 ESTO ES LO QUE FALTABA
   });
 
   useEffect(() => {
@@ -41,6 +49,8 @@ export const useGoogleAuth = () => {
   useEffect(() => {
     if (response?.type === "success") {
       handleWebSuccess(response);
+    } else if (response?.type === "error") {
+      console.error("❌ OAuth error:", response.error);
     }
   }, [response]);
 
@@ -65,7 +75,10 @@ export const useGoogleAuth = () => {
 
       if (Platform.OS === "web") {
         // Web: Usar expo-auth-session
+        console.log("🌐 Iniciando OAuth para web...");
         const result = await promptAsync();
+
+        console.log("📋 Resultado:", result.type);
 
         if (result.type === "success") {
           const { authentication } = result;
