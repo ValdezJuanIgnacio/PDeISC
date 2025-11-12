@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "Artemis",
+    "slug": "artemis-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tuempresa.artemis",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#E8DCC8"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.tuempresa.artemis",
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "READ_MEDIA_AUDIO",
+        "RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-web-browser",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Permitir que Artemis acceda a tus fotos.",
+          "savePhotosPermission": "Permitir que Artemis guarde fotos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
+    "extra": {
+      "googleWebClientId": "148633198885-qevaacb5brgmrg770n0mgfs4f580okp0.apps.googleusercontent.com",
+      "googleIosClientId": "TU_IOS_CLIENT_ID.apps.googleusercontent.com",
+      "googleAndroidClientId": "148633198885-qevaacb5brgmrg770n0mgfs4f580okp0.apps.googleusercontent.com",
+      "eas": {
+        "projectId": "8b22e3bb-55e4-4cbd-b9d3-f3afa5b2d008"
+      }
+    },
+    "scheme": "artemis"
+  }
+}
